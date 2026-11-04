@@ -1,0 +1,379 @@
+---
+import { ArrowRight, BookOpen, Calendar, Clock, GraduationCap, Heart, HeartHandshake, Lightbulb, Plus, Shield, Star, TreePine, Users } from '@lucide/astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import MeetingLocation from '../components/MeetingLocation.astro';
+import { site } from '../data/site';
+import '../styles/sections.css';
+
+const roles = [
+  {
+    color: '#EA580C',
+    colorSoft: '#FFF7ED',
+    colorBorder: '#FED7AA',
+    icon: 'heart',
+    title: 'Educador de sección',
+    description: 'Acompañas directamente a una sección — Manada, Tropa, Comunidad o Clan — en sus reuniones semanales, actividades y campamentos. Es el rol más cercano a las y los jóvenes.',
+    tasks: ['Planeas y conduces reuniones semanales', 'Diseñas actividades con el método scout', 'Acompañas campamentos y excursiones', 'Apoyas el desarrollo personal de cada integrante'],
+  },
+  {
+    color: '#0284C7',
+    colorSoft: '#F0F9FF',
+    colorBorder: '#BAE6FD',
+    icon: 'star',
+    title: 'Voluntario especialista',
+    description: 'Compartes una habilidad concreta — primeros auxilios, orientación, música, cocina de campamento, fotografía — en proyectos o talleres puntuales. No requiere compromiso semanal fijo.',
+    tasks: ['Participas en actividades específicas', 'Compartes tu experiencia o profesión', 'Apoyas campamentos o talleres especiales', 'Decides tu nivel de disponibilidad'],
+  },
+  {
+    color: '#16A34A',
+    colorSoft: '#F0FDF4',
+    colorBorder: '#86EFAC',
+    icon: 'users',
+    title: 'Apoyo logístico',
+    description: 'Colaboras en la organización y operación del grupo: transporte, equipamiento, gestión de espacios, compras. Fundamental para que las actividades ocurran con seguridad.',
+    tasks: ['Coordinas recursos y materiales', 'Apoyas la logística de campamentos', 'Gestionas equipamiento del grupo', 'Colaboras en la operación general'],
+  },
+  {
+    color: '#0C2D5A',
+    colorSoft: '#EFF6FF',
+    colorBorder: '#BFDBFE',
+    icon: 'shield',
+    title: 'Comité de grupo',
+    description: 'Formas parte de la estructura de apoyo institucional: administración, comunicación, relaciones con familias y vínculos con la asociación. No trabaja directamente con secciones juveniles.',
+    tasks: ['Apoyas la administración del grupo', 'Gestionas comunicación con familias', 'Colaboras en eventos y convocatorias', 'Representas al grupo en la asociación'],
+  },
+];
+
+const benefits = [
+  { icon: 'graduation', title: 'Formación continua', text: 'Acceso a cursos de liderazgo, educación no formal y metodología scout a nivel nacional e internacional.' },
+  { icon: 'users', title: 'Comunidad adulta', text: 'Formas parte de un equipo con valores compartidos. Las amistades que se construyen en el voluntariado scout suelen durar muchos años.' },
+  { icon: 'lightbulb', title: 'Habilidades reales', text: 'Planificación, comunicación, resolución de conflictos, liderazgo situacional — competencias que se aplican en cualquier entorno profesional.' },
+  { icon: 'heart', title: 'Impacto concreto', text: 'Ves crecer a las personas que acompañas. Contribuyes directamente a su desarrollo y al de la comunidad de Ciudad Obregón.' },
+  { icon: 'tree', title: 'Vida al aire libre', text: 'Campamentos, caminatas y actividades en la naturaleza forman parte de la experiencia scout para adultos también.' },
+  { icon: 'star', title: 'Reconocimiento', text: 'El voluntariado scout está reconocido por la Organización Mundial del Movimiento Scout y puede sumarse a tu desarrollo profesional.' },
+];
+
+const faqs = [
+  { q: '¿Necesito haber sido scout de joven?', a: 'No. Muchos de los mejores voluntarios se acercan al escultismo en la vida adulta. El grupo ofrece formación inicial para que conozcas el método y la dinámica de trabajo.' },
+  { q: '¿Cuánto tiempo requiere cada semana?', a: 'El compromiso principal para educadores de sección son los sábados de 4:00 a 6:00 p. m. más tiempo de planificación. Para roles de apoyo o especialistas, la disponibilidad se acuerda según el proyecto.' },
+  { q: '¿Puedo ser voluntario si tengo trabajo de tiempo completo?', a: 'Sí. La mayoría de los voluntarios trabaja o estudia. Las reuniones son los sábados por la tarde y la planificación puede hacerse en cualquier momento de la semana.' },
+  { q: '¿Qué formación se ofrece?', a: 'El grupo acompaña el proceso con un curso de inducción al método scout. Además, la Asociación de Scouts de México ofrece una ruta de formación progresiva para adultos voluntarios en todos los roles.' },
+  { q: '¿Puedo participar si tengo hijes en el grupo?', a: 'Sí, es común. Muchas familias participan en distintos roles. Lo importante es mantener claridad sobre los espacios: el rol de voluntario y el de mamá, papá o tutor son independientes.' },
+  { q: '¿Hay un mínimo de tiempo de compromiso?', a: 'Se espera un compromiso mínimo de un ciclo scout (aproximadamente un año) para roles de educador, para dar continuidad a las secciones. Para roles de apoyo o especialistas, se acuerda caso por caso.' },
+  { q: '¿Cómo es el proceso de incorporación?', a: 'Comienza con una conversación con el grupo para conocer las necesidades actuales y presentarte el rol que mejor se adapta a ti. No hay requisitos formales previos al primer contacto.' },
+];
+---
+
+<SiteLayout
+  title="Voluntariado adulto | Grupo Scout 5 Mak'Chu · Ciudad Obregón"
+  description="Únete como voluntario al Grupo Scout 5 Mak'Chu en Ciudad Obregón. Conoce los roles, el compromiso y lo que el voluntariado scout puede aportarte."
+>
+  <SiteHeader />
+  <main id="contenido">
+
+    <section class="vol-hero" aria-labelledby="vol-title">
+      <div class="vol-hero-deco" aria-hidden="true">
+        <svg viewBox="0 0 64 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 3C28 12 19 21 22 31c2 8 7 12 7 18h6c0-6 5-10 7-18C45 21 36 12 32 3Z"/>
+          <path d="M26 49c-1-14-9-24-18-20C0 33 2 44 10 47c-4-6-2-11 3-10 5 1 8 7 8 12Z"/>
+          <path d="M26 49c-1-14-9-24-18-20C0 33 2 44 10 47c-4-6-2-11 3-10 5 1 8 7 8 12Z" transform="translate(64 0) scale(-1 1)"/>
+          <rect x="18" y="49" width="28" height="6" rx="2"/>
+          <path d="M28 55c0 7-3 12-8 15 5 2 9 0 12-4 3 4 7 6 12 4-5-3-8-8-8-15Z"/>
+          <path d="M28 55h8c-1 9 1 15-4 22-5-7-3-13-4-22Z"/>
+        </svg>
+      </div>
+      <div class="page-width vol-hero-inner">
+        <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Voluntariado', href: '/voluntariado' }]} />
+        <p class="eyebrow vol-eyebrow"><HeartHandshake size={16} aria-hidden="true" />Adultos voluntarios</p>
+        <h1 id="vol-title" class="vol-title">Tu experiencia<br /><span>puede dejar huella.</span></h1>
+        <p class="vol-subtitle">El voluntariado scout no es solo dar tu tiempo — es crecer, aprender y ser parte de algo que importa. En Mak'Chu siempre hay un lugar para personas comprometidas con el desarrollo de la juventud.</p>
+        <div class="vol-hero-actions">
+          <a class="button vol-btn-primary" href="#roles">Ver formas de participar <ArrowRight size={16} aria-hidden="true" /></a>
+          <a class="button vol-btn-secondary" href="#contacto">Quiero saber más <ArrowRight size={16} aria-hidden="true" /></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="page-width">
+
+      <section class="detail-block" aria-labelledby="what-title">
+        <div class="detail-heading">
+          <div>
+            <p class="eyebrow">El trabajo real</p>
+            <h2 id="what-title" class="content-title mt-3">¿Qué hace exactamente<br /> un voluntario scout?</h2>
+          </div>
+          <p class="section-copy max-w-xs">No es solo vigilar — es diseñar, acompañar y aprender junto a las y los jóvenes.</p>
+        </div>
+        <div class="vol-what-grid">
+          <div class="vol-what-card">
+            <span class="vol-what-icon" aria-hidden="true"><Calendar size={24} /></span>
+            <h3>Reuniones semanales</h3>
+            <p>Los sábados son el corazón de la actividad scout. Ahí ocurren las dinámicas, juegos, proyectos y convivencia que forman a los jóvenes cada semana.</p>
+          </div>
+          <div class="vol-what-card">
+            <span class="vol-what-icon" aria-hidden="true"><TreePine size={24} /></span>
+            <h3>Campamentos y salidas</h3>
+            <p>Las experiencias en la naturaleza son parte esencial del método. Los voluntarios planean, coordinan y acompañan estas actividades de mayor alcance.</p>
+          </div>
+          <div class="vol-what-card">
+            <span class="vol-what-icon" aria-hidden="true"><BookOpen size={24} /></span>
+            <h3>Planificación de actividades</h3>
+            <p>Cada reunión tiene un propósito educativo. Los voluntarios diseñan experiencias que combinan habilidades, valores y diversión de forma intencional.</p>
+          </div>
+          <div class="vol-what-card">
+            <span class="vol-what-icon" aria-hidden="true"><Heart size={24} /></span>
+            <h3>Acompañamiento personal</h3>
+            <p>Escuchas, orientas y apoyas el desarrollo individual de cada joven. No eres terapeuta ni maestro — eres un adulto de referencia positiva.</p>
+          </div>
+          <div class="vol-what-card">
+            <span class="vol-what-icon" aria-hidden="true"><Users size={24} /></span>
+            <h3>Trabajo en equipo adulto</h3>
+            <p>Colaboras con otros voluntarios para distribuir responsabilidades, compartir ideas y mejorar continuamente la propuesta del grupo.</p>
+          </div>
+          <div class="vol-what-card">
+            <span class="vol-what-icon" aria-hidden="true"><GraduationCap size={24} /></span>
+            <h3>Formación continua</h3>
+            <p>Participas en cursos, talleres y encuentros para seguir desarrollando tus habilidades como educador no formal y como líder.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="roles" class="detail-block" aria-labelledby="roles-title">
+        <div class="detail-heading">
+          <div>
+            <p class="eyebrow">Encuentra tu lugar</p>
+            <h2 id="roles-title" class="content-title mt-3">Cuatro formas de<br /> ser parte de Mak'Chu.</h2>
+          </div>
+          <p class="section-copy max-w-xs">No todos los voluntarios hacen lo mismo. Hay un rol que se adapta a tu disponibilidad y tus habilidades.</p>
+        </div>
+        <div class="vol-roles-grid">
+          {roles.map((role) => (
+            <article class="vol-role-card" style={`--role-color: ${role.color}; --role-soft: ${role.colorSoft}; --role-border: ${role.colorBorder};`}>
+              <h3>{role.title}</h3>
+              <p>{role.description}</p>
+              <ul>
+                {role.tasks.map((task) => (
+                  <li><span aria-hidden="true">→</span>{task}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="detail-block vol-profile-benefits" aria-labelledby="profile-title">
+        <div class="vol-profile">
+          <p class="eyebrow">¿A quién buscamos?</p>
+          <h2 id="profile-title" class="content-title mt-3">No necesitas ser<br /> el voluntario perfecto.</h2>
+          <p class="section-copy mt-4">Solo necesitas estas tres cosas:</p>
+          <div class="vol-profile-items">
+            <div class="vol-profile-item">
+              <span class="vol-profile-num" aria-hidden="true">1</span>
+              <div>
+                <h3>Compromiso con valores</h3>
+                <p>Creer en el potencial de las personas jóvenes y en que el respeto, la honestidad y el servicio importan.</p>
+              </div>
+            </div>
+            <div class="vol-profile-item">
+              <span class="vol-profile-num" aria-hidden="true">2</span>
+              <div>
+                <h3>Disponibilidad los sábados</h3>
+                <p>Al menos una parte de tu tarde del sábado. No hace falta que seas disponible todos los sábados desde el primer día.</p>
+              </div>
+            </div>
+            <div class="vol-profile-item">
+              <span class="vol-profile-num" aria-hidden="true">3</span>
+              <div>
+                <h3>Ganas de aprender</h3>
+                <p>El método scout se aprende haciendo. Nadie llega sabiendo todo — el grupo acompaña tu proceso de formación.</p>
+              </div>
+            </div>
+          </div>
+          <div class="vol-profile-note">
+            <Shield size={16} aria-hidden="true" />
+            <p>Todos los voluntarios pasan por un proceso de incorporación que incluye conversación con el equipo adulto, presentación del grupo y formación inicial.</p>
+          </div>
+        </div>
+
+        <div class="vol-benefits">
+          <p class="eyebrow">Lo que el voluntariado te da</p>
+          <h2 class="content-title mt-3">No es solo dar.<br /> También es recibir.</h2>
+          <div class="vol-benefits-grid">
+            {benefits.map((b) => (
+              <div class="vol-benefit-item">
+                <h3>{b.title}</h3>
+                <p>{b.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="vol-commitment-section detail-block" aria-labelledby="commit-title">
+        <div class="detail-heading">
+          <div>
+            <p class="eyebrow">Transparencia ante todo</p>
+            <h2 id="commit-title" class="content-title mt-3">El compromiso que<br /> el grupo espera de ti.</h2>
+          </div>
+        </div>
+        <div class="vol-commit-grid">
+          <div class="vol-commit-card vol-commit-primary">
+            <Clock size={28} aria-hidden="true" />
+            <h3>Tiempo</h3>
+            <p>El núcleo es el <strong>sábado por la tarde</strong> (4:00–6:00 p. m.). Para educadores de sección se suman aprox. <strong>1–2 horas semanales</strong> de planificación y comunicación con el equipo.</p>
+          </div>
+          <div class="vol-commit-card">
+            <GraduationCap size={28} aria-hidden="true" />
+            <h3>Formación</h3>
+            <p>Se espera participar en al menos un curso de inducción al método scout en el primer año. La formación continua es una responsabilidad compartida entre el voluntario y el grupo.</p>
+          </div>
+          <div class="vol-commit-card">
+            <Calendar size={28} aria-hidden="true" />
+            <h3>Continuidad</h3>
+            <p>Para roles de educador se pide un compromiso mínimo de <strong>un ciclo scout</strong> (aproximadamente septiembre–julio). La continuidad es esencial para las y los jóvenes.</p>
+          </div>
+          <div class="vol-commit-card">
+            <Lightbulb size={28} aria-hidden="true" />
+            <h3>Actitud</h3>
+            <p>Apertura al trabajo en equipo, disposición a recibir retroalimentación y voluntad de poner el desarrollo de las y los jóvenes por encima de la comodidad personal.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-block" aria-labelledby="faq-vol-title">
+        <div class="detail-heading">
+          <div>
+            <p class="eyebrow">Preguntas frecuentes</p>
+            <h2 id="faq-vol-title" class="content-title mt-3">Lo que suelen preguntar<br /> antes de acercarse.</h2>
+          </div>
+        </div>
+        <div class="section-faq">
+          {faqs.map((item) => (
+            <details>
+              <summary>{item.q}<Plus size={18} aria-hidden="true" /></summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+    </div>
+
+    <MeetingLocation />
+
+    <section id="contacto" class="vol-cta" aria-labelledby="cta-title">
+      <div class="page-width vol-cta-inner">
+        <p class="eyebrow vol-cta-eyebrow"><Star size={14} aria-hidden="true" />Da el primer paso</p>
+        <h2 id="cta-title" class="vol-cta-title">Empieza con una<br /><span>conversación.</span></h2>
+        <p class="vol-cta-text">No tienes que tomar ninguna decisión hoy. Acércate, conoce el grupo, hazte una idea de cómo funciona. A partir de ahí, decidimos juntos si hay encaje.</p>
+        {site.contact ? (
+          <a class="button vol-cta-btn" href={site.contact.href}>{site.contact.label} <ArrowRight size={17} aria-hidden="true" /></a>
+        ) : (
+          <div class="vol-cta-pending">
+            <p class="font-bold">Canal de contacto por confirmar</p>
+            <p class="mt-2 text-sm leading-relaxed opacity-80">Aquí estará el canal institucional para solicitar información. Esta vista previa todavía no recibe solicitudes.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+  </main>
+  <SiteFooter />
+</SiteLayout>
+
+<style>
+  /* ── Hero ── */
+  .vol-hero { position: relative; overflow: hidden; background: linear-gradient(150deg, #071E3D 0%, #0C2D5A 55%, #0D3870 100%); padding-bottom: 5rem; }
+  .vol-hero-deco { position: absolute; right: -4%; top: -6%; width: min(45vw, 380px); aspect-ratio: 64/80; color: rgba(255,255,255,.045); pointer-events: none; transform: rotate(12deg); }
+  .vol-hero-deco svg { width: 100%; height: 100%; }
+  .vol-hero-inner { position: relative; z-index: 1; padding-block: 1rem 0; }
+  .vol-hero-inner .breadcrumbs { color: rgba(255,255,255,.45); }
+  .vol-hero-inner .breadcrumbs a { color: rgba(255,255,255,.5); }
+  .vol-hero-inner .breadcrumbs [aria-current] { color: rgba(255,255,255,.8); }
+  .vol-eyebrow { color: #7DD3FC; margin-top: 1rem; }
+  .vol-eyebrow svg { color: #F97316; }
+  .vol-title { font-size: clamp(2.8rem, 6vw, 5.2rem); line-height: 1.07; font-weight: 800; letter-spacing: -.03em; color: #fff; margin-top: 1.4rem; }
+  .vol-title span { color: #F97316; }
+  .vol-subtitle { max-width: 38rem; margin-top: 1.4rem; font-size: clamp(.94rem, 1.5vw, 1.08rem); line-height: 1.85; color: #BAE6FD; }
+  .vol-hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+  .vol-btn-primary { background: #F97316; color: #fff; border-color: transparent; border-radius: 99px; box-shadow: 0 4px 16px rgba(249,115,22,.45); }
+  .vol-btn-primary:hover { background: #EA580C; }
+  .vol-btn-secondary { border-radius: 99px; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; }
+  .vol-btn-secondary:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.45); }
+
+  /* ── What grid ── */
+  .vol-what-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .vol-what-card { padding: 1.6rem; border: 2px solid var(--border-default); border-radius: 1.2rem; background: var(--surface-raised); transition: border-color .18s, box-shadow .18s; }
+  .vol-what-card:hover { border-color: var(--theme-primary-border); box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-primary) 10%, transparent); }
+  .vol-what-icon { display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: color-mix(in srgb, #EA580C 12%, transparent); color: #EA580C; margin-bottom: 1rem; border: 2px solid color-mix(in srgb, #EA580C 20%, transparent); }
+  .vol-what-card h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: .6rem; }
+  .vol-what-card p { font-size: .86rem; line-height: 1.85; color: var(--content-body); }
+
+  /* ── Roles ── */
+  .vol-roles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+  .vol-role-card { padding: 2rem 2rem 1.6rem; border: 2.5px solid var(--role-border); border-radius: 1.5rem; background: var(--role-soft); position: relative; overflow: hidden; }
+  .vol-role-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--role-color); }
+  .vol-role-card h3 { font-size: 1.15rem; font-weight: 800; letter-spacing: -.03em; color: var(--role-color); margin-bottom: .7rem; }
+  .vol-role-card > p { font-size: .88rem; line-height: 1.85; color: var(--content-body); }
+  .vol-role-card ul { margin-top: 1.2rem; display: grid; gap: .55rem; padding: 0; list-style: none; border-top: 1.5px solid var(--role-border); padding-top: 1.1rem; }
+  .vol-role-card li { display: flex; align-items: start; gap: .6rem; font-size: .82rem; font-weight: 600; color: var(--content-strong); }
+  .vol-role-card li span { color: var(--role-color); font-weight: 900; flex-shrink: 0; margin-top: .05em; }
+
+  /* ── Profile + Benefits ── */
+  .vol-profile-benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .vol-profile-items { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  .vol-profile-item { display: flex; align-items: start; gap: 1rem; }
+  .vol-profile-num { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; flex-shrink: 0; border-radius: 50%; background: #EA580C; color: #fff; font-size: .85rem; font-weight: 900; box-shadow: 0 2px 8px rgba(234,88,12,.4); }
+  .vol-profile-item h3 { font-size: .95rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: .4rem; }
+  .vol-profile-item p { font-size: .84rem; line-height: 1.85; color: var(--content-body); }
+  .vol-profile-note { display: flex; align-items: start; gap: .75rem; margin-top: 2rem; padding: 1.1rem 1.3rem; border-radius: 1rem; background: color-mix(in srgb, #EA580C 8%, transparent); border: 1.5px solid color-mix(in srgb, #EA580C 20%, transparent); }
+  .vol-profile-note svg { flex-shrink: 0; color: #EA580C; margin-top: .15rem; }
+  .vol-profile-note p { font-size: .82rem; line-height: 1.8; color: var(--content-body); }
+  .vol-benefits-grid { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  .vol-benefit-item { padding-left: 1rem; border-left: 3px solid var(--theme-primary-border); }
+  .vol-benefit-item h3 { font-size: .9rem; font-weight: 800; letter-spacing: -.02em; color: var(--theme-primary-ink); margin-bottom: .35rem; }
+  .vol-benefit-item p { font-size: .83rem; line-height: 1.8; color: var(--content-body); }
+
+  /* ── Commitment ── */
+  .vol-commit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+  .vol-commit-card { padding: 1.8rem; border: 2px solid var(--border-default); border-radius: 1.3rem; background: var(--surface-raised); }
+  .vol-commit-card svg { color: var(--theme-primary); margin-bottom: 1rem; }
+  .vol-commit-card h3 { font-size: 1.05rem; font-weight: 800; letter-spacing: -.025em; margin-bottom: .6rem; }
+  .vol-commit-card p { font-size: .86rem; line-height: 1.85; color: var(--content-body); }
+  .vol-commit-card strong { color: var(--content-heading); }
+  .vol-commit-primary { border-color: var(--theme-primary-border); background: var(--theme-primary-soft); }
+  .vol-commit-primary svg { color: #EA580C; }
+
+  /* ── CTA ── */
+  .vol-cta { background: linear-gradient(150deg, #071E3D 0%, #0C2D5A 50%, #0D3870 100%); position: relative; overflow: hidden; }
+  .vol-cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 65% 50%, rgba(249,115,22,.2) 0%, transparent 65%); pointer-events: none; }
+  .vol-cta-inner { position: relative; z-index: 1; padding-block: 5rem; text-align: center; }
+  .vol-cta-eyebrow { color: #7DD3FC; justify-content: center; }
+  .vol-cta-eyebrow svg { color: #F97316; }
+  .vol-cta-title { font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.1; font-weight: 800; letter-spacing: -.03em; color: #fff; margin-top: 1.2rem; }
+  .vol-cta-title span { color: #F97316; }
+  .vol-cta-text { max-width: 36rem; margin: 1.4rem auto 0; font-size: .96rem; line-height: 1.9; color: #BAE6FD; }
+  .vol-cta-btn { margin-top: 2rem; background: #F97316; color: #fff; border-radius: 99px; border-color: transparent; font-size: .95rem; padding: .95rem 2rem; box-shadow: 0 4px 18px rgba(249,115,22,.5); }
+  .vol-cta-btn:hover { background: #EA580C; }
+  .vol-cta-pending { margin: 2rem auto 0; max-width: 26rem; padding: 1.1rem 1.5rem; border: 1.5px dashed rgba(255,255,255,.25); border-radius: .75rem; background: rgba(255,255,255,.07); color: rgba(255,255,255,.8); }
+
+  /* ── Responsive ── */
+  @media (max-width: 1023px) {
+    .vol-what-grid { grid-template-columns: repeat(2, 1fr); }
+    .vol-profile-benefits { grid-template-columns: 1fr; gap: 3rem; }
+    .vol-commit-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 767px) {
+    .vol-roles-grid { grid-template-columns: 1fr; }
+    .vol-what-grid { grid-template-columns: 1fr; }
+    .vol-commit-grid { grid-template-columns: 1fr; }
+    .vol-hero-stats { gap: 1.2rem; }
+    .vol-stat-sep { display: none; }
+  }
+  @media (max-width: 540px) {
+    .vol-cta-inner { padding-block: 3.5rem; }
+  }
+</style>

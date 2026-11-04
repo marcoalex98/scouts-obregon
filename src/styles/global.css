@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme { --font-sans: 'Manrope Variable', system-ui, sans-serif; }
+
+@theme inline {
+  --color-canvas: var(--surface-page);
+  --color-surface: var(--surface-raised);
+  --color-surface-muted: var(--surface-muted);
+  --color-heading: var(--content-heading);
+  --color-body: var(--content-body);
+  --color-muted: var(--content-muted);
+  --color-strong: var(--content-strong);
+  --color-divider: var(--border-subtle);
+  --color-outline: var(--border-default);
+  --color-outline-strong: var(--border-strong);
+  --color-primary: var(--theme-primary);
+  --color-primary-hover: var(--theme-primary-hover);
+  --color-on-primary: var(--theme-on-primary);
+  --color-primary-soft: var(--theme-primary-soft);
+  --color-primary-ink: var(--theme-primary-ink);
+  --color-primary-border: var(--theme-primary-border);
+}
+
+:root {
+  color-scheme: light;
+  --site-header-height: calc(5.5rem + 1px);
+  --surface-page: light-dark(var(--color-white), var(--color-slate-950));
+  --surface-raised: light-dark(var(--color-white), var(--color-slate-900));
+  --surface-muted: light-dark(color-mix(in oklab, var(--color-orange-50) 55%, var(--color-slate-50)), var(--color-slate-900));
+  --content-heading: light-dark(var(--color-slate-900), var(--color-slate-100));
+  --content-body: light-dark(var(--color-slate-600), var(--color-slate-300));
+  --content-muted: light-dark(var(--color-slate-500), var(--color-slate-400));
+  --content-strong: light-dark(var(--color-slate-700), var(--color-slate-200));
+  --content-button: light-dark(var(--color-slate-800), var(--color-slate-100));
+  --border-subtle: light-dark(var(--color-slate-100), var(--color-slate-800));
+  --border-default: light-dark(var(--color-slate-200), var(--color-slate-700));
+  --border-strong: light-dark(var(--color-slate-300), var(--color-slate-600));
+  --menu-shadow: light-dark(#0f172a35, #00000066);
+}
+
+:root, [data-theme='purple'] {
+  /* Naranja como acento de acción, azul marino como tinta de marca */
+  --theme-primary: light-dark(#EA580C, #FB923C);
+  --theme-primary-hover: light-dark(#C2410C, #F97316);
+  --theme-on-primary: var(--color-white);
+  --theme-primary-soft: light-dark(#FFF7ED, color-mix(in oklab, #431407 48%, var(--surface-page)));
+  --theme-primary-ink: light-dark(#0C2D5A, #BAE6FD);
+  --theme-primary-border: light-dark(#FED7AA, #9A3412);
+}
+[data-theme='yellow'] {
+  --theme-primary: var(--color-yellow-400);
+  --theme-primary-hover: light-dark(var(--color-yellow-500), var(--color-yellow-300));
+  --theme-on-primary: var(--color-yellow-950);
+  --theme-primary-soft: light-dark(var(--color-yellow-50), color-mix(in oklab, var(--color-yellow-950) 48%, var(--surface-page)));
+  --theme-primary-ink: light-dark(var(--color-yellow-900), var(--color-yellow-200));
+  --theme-primary-border: light-dark(var(--color-yellow-200), var(--color-yellow-800));
+}
+[data-theme='green'] {
+  --theme-primary: light-dark(var(--color-green-700), var(--color-green-400));
+  --theme-primary-hover: light-dark(var(--color-green-800), var(--color-green-300));
+  --theme-on-primary: light-dark(var(--color-white), var(--color-green-950));
+  --theme-primary-soft: light-dark(var(--color-green-50), color-mix(in oklab, var(--color-green-950) 48%, var(--surface-page)));
+  --theme-primary-ink: light-dark(var(--color-green-900), var(--color-green-200));
+  --theme-primary-border: light-dark(var(--color-green-200), var(--color-green-800));
+}
+[data-theme='blue'] {
+  --theme-primary: light-dark(var(--color-blue-700), var(--color-blue-400));
+  --theme-primary-hover: light-dark(var(--color-blue-800), var(--color-blue-300));
+  --theme-on-primary: light-dark(var(--color-white), var(--color-blue-950));
+  --theme-primary-soft: light-dark(var(--color-blue-50), color-mix(in oklab, var(--color-blue-950) 48%, var(--surface-page)));
+  --theme-primary-ink: light-dark(var(--color-blue-900), var(--color-blue-200));
+  --theme-primary-border: light-dark(var(--color-blue-200), var(--color-blue-800));
+}
+[data-theme='red'] {
+  --theme-primary: light-dark(var(--color-red-700), var(--color-red-400));
+  --theme-primary-hover: light-dark(var(--color-red-800), var(--color-red-300));
+  --theme-on-primary: light-dark(var(--color-white), var(--color-red-950));
+  --theme-primary-soft: light-dark(var(--color-red-50), color-mix(in oklab, var(--color-red-950) 48%, var(--surface-page)));
+  --theme-primary-ink: light-dark(var(--color-red-900), var(--color-red-200));
+  --theme-primary-border: light-dark(var(--color-red-200), var(--color-red-800));
+}
+/* Saved appearance overrides the system; light remains the fallback. */
+:root[data-appearance='dark'] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-appearance='light']) { color-scheme: dark; }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 7rem; }
+  body { margin: 0; font-family: var(--font-sans); background: var(--surface-page); color: var(--content-heading); -webkit-font-smoothing: antialiased; }
+  button, summary, select { -webkit-tap-highlight-color: transparent; }
+  a, button, summary, input, select { touch-action: manipulation; }
+  :focus-visible { outline: 3px solid var(--theme-primary-ink); outline-offset: 5px; }
+  ::selection { background: var(--theme-primary-border); color: var(--theme-primary-ink); }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+}
+
+@layer components {
+  .page-width { width: min(100% - 3rem, 72rem); margin-inline: auto; }
+  .eyebrow { display: inline-flex; align-items: center; gap: .65rem; font-size: .69rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: var(--theme-primary-ink); }
+  .button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: .65rem; border: 1px solid transparent; border-radius: .75rem; padding: .8rem 1.25rem; font-size: .82rem; line-height: 1.35; font-weight: 800; text-decoration: none; transition: transform .15s ease, background-color .18s, border-color .18s, box-shadow .18s; }
+  .button:active { transform: scale(.97); }
+  .button-primary { background: var(--theme-primary); color: var(--theme-on-primary); box-shadow: 0 .55rem 1.25rem color-mix(in srgb, var(--theme-primary) 24%, transparent); }
+  .button-primary:hover { background: var(--theme-primary-hover); }
+  .button-secondary { border-color: var(--border-default); background: var(--surface-raised); color: var(--content-button); }
+  .button-secondary:hover { background: var(--surface-muted); border-color: var(--border-strong); }
+  .text-link { display: inline-flex; min-height: 2.75rem; align-items: center; gap: .5rem; color: var(--theme-primary-ink); font-size: .84rem; font-weight: 750; text-underline-offset: .25rem; }
+  .text-link:hover { text-decoration: underline; }
+  .skip-link { position: fixed; top: -5rem; left: 1rem; z-index: 100; background: var(--theme-primary); color: var(--theme-on-primary); padding: .8rem 1rem; border-radius: .4rem; }
+  .skip-link:focus { top: 1rem; }
+  .site-header { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border-subtle); background: var(--surface-raised); }
+  .site-header-row { min-height: calc(var(--site-header-height) - 1px); }
+  .wordmark { display: flex; align-items: center; gap: .65rem; flex-shrink: 0; font-size: 1.72rem; line-height: 1.1; font-weight: 800; letter-spacing: -.07em; color: var(--theme-primary-ink); }
+  .wordmark-copy { display: flex; flex-direction: column; }
+  .wordmark-symbol { flex-shrink: 0; color: var(--theme-primary); }
+  .wordmark-dot { color: var(--theme-primary); }
+  .wordmark-caption { margin-top: .35rem; font-size: .53rem; font-weight: 750; letter-spacing: .18em; color: var(--content-muted); }
+  .nav-link { padding-block: .8rem; color: var(--content-body); transition: color .18s; }
+  .nav-link:hover { color: var(--theme-primary-ink); }
+  .nav-link[data-active='true'] { color: var(--theme-primary-ink); text-decoration: underline; text-decoration-color: var(--theme-primary); text-underline-offset: .5rem; }
+  @media (max-width: 420px) {
+    .page-width { width: calc(100% - 2rem); }
+    .header-join { padding-inline: .8rem; font-size: .74rem; }
+    .header-join svg { display: none; }
+    .wordmark { font-size: 1.55rem; }
+  }
+}

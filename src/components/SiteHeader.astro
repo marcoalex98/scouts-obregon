@@ -1,0 +1,40 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+import SideMenu from './SideMenu.astro';
+import { navigation, isNavigationActive } from '../data/navigation';
+import { site } from '../data/site';
+import FleurDeLis from '../assets/flor-de-lis.svg';
+
+---
+
+<header class="site-header">
+  <div class="page-width site-header-row flex items-center justify-between gap-5">
+    <a class="wordmark" href="/" aria-label={`${site.name}, inicio`}>
+      {site.logo ? (
+        <img src={site.logo.src} width={site.logo.width} height={site.logo.height} alt={site.name} class="max-h-14 w-auto" />
+      ) : (
+        <>
+          <FleurDeLis class="wordmark-symbol" width="32" height="40" aria-hidden="true" focusable="false" />
+          <span class="wordmark-copy"><span>{site.shortName}<span class="wordmark-dot">.</span></span><span class="wordmark-caption">GRUPO SCOUT 5</span></span>
+        </>
+      )}
+    </a>
+    <nav class="hidden items-center gap-7 text-[13px] font-semibold lg:flex" aria-label="Navegación principal">
+      {navigation.map((item) => <a class="nav-link" href={item.href} data-active={isNavigationActive(item.href, Astro.url.pathname)} aria-current={Astro.url.pathname.replace(/\/$/, '') === item.href ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <div class="flex items-center gap-3">
+      <a class="button button-primary header-join" href="/#unete" aria-label="Únete al grupo"><span>Únete<span class="hidden min-[421px]:inline"> al grupo</span></span> <ArrowUpRight size={16} aria-hidden="true" /></a>
+      <SideMenu />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-top: 4px solid transparent;
+    background:
+      linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box,
+      linear-gradient(90deg, #0C2D5A 0%, #F97316 50%, #38BDF8 100%) border-box;
+    background-clip: padding-box, border-box;
+  }
+</style>

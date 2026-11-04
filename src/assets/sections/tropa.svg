@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200">
+  <title>Tropa - Tienda de campaña</title>
+  <!-- Background -->
+  <rect width="320" height="200" fill="#DCFCE7" rx="0"/>
+
+  <!-- Secondary: night sky strip at top -->
+  <rect width="320" height="55" fill="#0C2D5A" opacity="0.12"/>
+
+  <!-- Secondary: stars -->
+  <circle cx="50" cy="18" r="2" fill="#FCD34D" opacity="0.9"/>
+  <circle cx="80" cy="10" r="1.5" fill="white" opacity="0.8"/>
+  <circle cx="130" cy="20" r="2" fill="#FCD34D" opacity="0.7"/>
+  <circle cx="200" cy="12" r="1.5" fill="white" opacity="0.8"/>
+  <circle cx="260" cy="22" r="2" fill="#FCD34D" opacity="0.9"/>
+  <circle cx="290" cy="8" r="1.5" fill="white" opacity="0.7"/>
+
+  <!-- Secondary: mountain silhouette behind tent -->
+  <polygon points="80,120 160,30 240,120" fill="#38BDF8" opacity="0.3"/>
+  <polygon points="40,120 100,55 160,120" fill="#0C2D5A" opacity="0.15"/>
+  <polygon points="160,120 220,55 280,120" fill="#0C2D5A" opacity="0.15"/>
+
+  <!-- Secondary: pine trees flanking -->
+  <!-- Left pine -->
+  <polygon points="52,160 68,160 60,130" fill="#16A34A"/>
+  <polygon points="48,148 72,148 60,115" fill="#16A34A"/>
+  <polygon points="45,135 75,135 60,98" fill="#16A34A"/>
+  <rect x="58" y="160" width="4" height="12" fill="#8B5E34"/>
+  <!-- Right pine -->
+  <polygon points="248,160 264,160 256,130" fill="#16A34A"/>
+  <polygon points="244,148 268,148 256,115" fill="#16A34A"/>
+  <polygon points="241,135 271,135 256,98" fill="#16A34A"/>
+  <rect x="254" y="160" width="4" height="12" fill="#8B5E34"/>
+
+  <!-- MAIN FOCAL ELEMENT: A-frame camping tent centered -->
+  <!-- Tent body -->
+  <polygon points="100,170 160,68 220,170" fill="#16A34A"/>
+  <!-- Tent shadow side -->
+  <polygon points="160,68 220,170 200,170 160,88" fill="#0C2D5A" opacity="0.25"/>
+  <!-- Tent outline -->
+  <polygon points="100,170 160,68 220,170" fill="none" stroke="#0C2D5A" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Tent floor line -->
+  <line x1="100" y1="170" x2="220" y2="170" stroke="#0C2D5A" stroke-width="2"/>
+  <!-- Entrance flap -->
+  <path d="M148,170 Q155,138 160,120 Q165,138 172,170 Z" fill="#4ADE80" stroke="#0C2D5A" stroke-width="1.5"/>
+  <!-- Tent guy lines -->
+  <line x1="160" y1="68" x2="88" y2="140" stroke="#0C2D5A" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <line x1="160" y1="68" x2="232" y2="140" stroke="#0C2D5A" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- Secondary: campfire in front of tent -->
+  <!-- Logs -->
+  <ellipse cx="160" cy="184" rx="14" ry="4" fill="#8B5E34"/>
+  <line x1="150" y1="182" x2="170" y2="186" stroke="#6B4423" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="170" y1="182" x2="150" y2="186" stroke="#6B4423" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Flames -->
+  <path d="M157,182 Q155,172 160,165 Q165,172 163,182 Z" fill="#F97316"/>
+  <path d="M155,182 Q152,175 157,169 Q160,175 158,182 Z" fill="#FCD34D"/>
+  <path d="M162,182 Q165,175 160,169 Q163,175 165,182 Z" fill="#FCD34D"/>
+</svg>

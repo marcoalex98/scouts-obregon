@@ -1,0 +1,43 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="page-width footer-main">
+    <div>
+      <a class="footer-logo" href="/">{site.shortName}</a>
+      <p class="footer-tagline">Grupo Scout 5 · Ciudad Obregón, Sonora</p>
+    </div>
+    <nav class="footer-nav" aria-label="Navegación del pie de página">
+      <a href="/secciones">Secciones</a>
+      <a href="/#familias">Para familias</a>
+      <a href="/#voluntariado">Voluntariado</a>
+      <a href="/#ubicacion">Ubicación</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <div class="page-width footer-bottom-row">
+      <span>{site.name}</span>
+      <a href="#contenido">Volver al inicio ↑</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { border-top: 4px solid #F97316; background: #071E3D; color: #BAE6FD; }
+  .footer-main { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 2.75rem; }
+  .footer-logo { display: inline-flex; color: #fff; font-size: 1.65rem; font-weight: 900; letter-spacing: -.06em; text-decoration: none; }
+  .footer-logo:hover { color: #38BDF8; }
+  .footer-tagline { margin-top: .45rem; color: #7DD3FC; font-size: .75rem; }
+  .footer-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem 1.5rem; font-size: .78rem; font-weight: 800; }
+  .footer-nav a { min-height: 2.75rem; display: inline-flex; align-items: center; color: #E0F2FE; text-decoration: none; }
+  .footer-nav a:hover { color: #F97316; }
+  .footer-bottom { border-top: 1px solid rgba(125,211,252,.18); background: rgba(0,0,0,.12); }
+  .footer-bottom-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 1.5rem; padding-block: 1.15rem; color: #7DD3FC; font-size: .68rem; }
+  .footer-bottom a { color: inherit; text-underline-offset: .25rem; }
+  .footer-bottom a:hover { color: #fff; text-decoration: underline; }
+  @media (max-width: 640px) {
+    .footer-main { align-items: flex-start; flex-direction: column; }
+    .footer-nav { justify-content: flex-start; }
+  }
+</style>

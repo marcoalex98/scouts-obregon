@@ -1,0 +1,72 @@
+---
+import { ArrowRight, Plus } from '@lucide/astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SectionCard from '../../components/SectionCard.astro';
+import SectionContact from '../../components/SectionContact.astro';
+import MeetingLocation from '../../components/MeetingLocation.astro';
+import { scoutSections, sectionHref } from '../../data/sections';
+import { site, meetingSummary } from '../../data/site';
+import '../../styles/sections.css';
+
+const questions = [
+  { question: '¿Qué es una sección scout?', answer: 'Es una etapa del recorrido juvenil, organizada por edad y con un enfoque propio. Las secciones comparten valores y la idea de aprender haciendo, mientras cambian los retos y las responsabilidades.' },
+  { question: '¿Cómo sé qué sección me corresponde?', answer: 'Revisa los rangos de edad de esta página. Son la referencia actual del Grupo Scout 5 Mak’Chu. Si estás cerca de una transición o tienes alguna duda, confirma con el grupo la forma de incorporación.' },
+  { question: '¿Se necesita haber pasado por las secciones anteriores?', answer: 'Puedes acercarte a conocer la etapa que corresponde a tu edad aunque apenas estés descubriendo el escultismo. El grupo confirmará el proceso y los requisitos; esta página no supone experiencia previa.' },
+  { question: '¿Todas las secciones hacen lo mismo?', answer: 'No. Manada se centra en descubrimiento y juego; Tropa, en exploración y patrullas; Comunidad, en autonomía y proyectos; Clan, en servicio y proyecto de vida. Las actividades concretas dependerán de la propuesta de cada sección.' },
+  { question: '¿Dónde se reúnen y en qué horario?', answer: meetingSummary },
+  { question: '¿Cuáles son las cuotas y los requisitos?', answer: 'Esos datos están pendientes de confirmación para el sitio. Antes de realizar compras, consulta al grupo. El apartado de contacto mostrará el canal institucional cuando esté validado.' },
+];
+const schema = {
+  '@context': 'https://schema.org', '@type': 'ItemList', name: 'Secciones del Grupo Scout 5 Mak’Chu',
+  itemListElement: scoutSections.map((section, index) => ({ '@type': 'ListItem', position: index + 1, name: section.name, url: new URL(sectionHref(section), site.url).href })),
+};
+---
+<SiteLayout title="Secciones scouts por edad en Ciudad Obregón | Mak’Chu" description="Compara Manada, Tropa, Comunidad y Clan del Grupo Scout 5 Mak’Chu. Conoce sus edades, actividades y aprendizajes en Ciudad Obregón.">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')} />
+  <SiteHeader />
+  <main id="contenido">
+    <div class="page-width">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Secciones', href: '/secciones' }]} />
+      <section class="overview-hero" aria-labelledby="overview-title">
+        <p class="eyebrow">Secciones scouts en Ciudad Obregón</p>
+        <h1 id="overview-title" class="page-title mt-5">Cuatro etapas.<br /><span>Un mismo espíritu.</span></h1>
+        <p class="section-copy mt-6 max-w-xl">Crecer cambia la manera de vivir la aventura. En Mak’Chu, cada sección tiene retos, experiencias y aprendizajes para una etapa distinta de la vida.</p>
+      </section>
+      <nav class="age-trail" aria-label="Elige una sección por edad">
+        {scoutSections.map((section) => <a href={sectionHref(section)} data-theme={section.color}><strong>{section.minAge}–{section.maxAge} <span>años</span></strong><span class="flex items-center justify-between gap-2">{section.shortName}<ArrowRight size={16} aria-hidden="true" /></span></a>)}
+      </nav>
+      <section class="detail-block" aria-labelledby="choose-title">
+        <div class="detail-heading"><div><p class="eyebrow">Encuentra tu etapa</p><h2 id="choose-title" class="content-title mt-3">¿Dónde empieza<br /> tu aventura?</h2></div><p class="section-copy max-w-sm">Conoce el enfoque de cada sección. En su página encontrarás más información, preguntas frecuentes y espacio para sus fotografías.</p></div>
+        <div class="grid gap-6 md:grid-cols-2">{scoutSections.map((section) => <SectionCard section={section} />)}</div>
+      </section>
+      <section class="detail-block" aria-labelledby="growing-title">
+        <div class="intro-columns">
+          <div><p class="eyebrow">Un camino de crecimiento</p><h2 id="growing-title" class="content-title mt-3">Cambian los retos.<br /> Crece lo que puedes aportar.</h2></div>
+          <div><p class="section-copy">En Manada, descubrir y jugar abre la puerta a la convivencia. En Tropa, la patrulla permite practicar habilidades y colaborar. Comunidad da más espacio a decidir y proponer. En Clan, el servicio se conecta con el proyecto de vida.</p><p class="section-copy">No es una carrera por llegar antes a la siguiente sección. Cada etapa tiene su propio valor. Los momentos de transición y la incorporación de nuevos integrantes se conversan con el grupo.</p></div>
+        </div>
+        <div class="journey-panel mt-10">
+          <h3 class="text-xl font-extrabold tracking-tight">Lo que une a las cuatro secciones</h3>
+          <div class="grid gap-7 sm:grid-cols-3 mt-7">
+            <div class="journey-step"><h3>Aprender haciendo</h3><p>Vivir una experiencia, reflexionar sobre ella y volver a intentarlo con lo aprendido.</p></div>
+            <div class="journey-step"><h3>Crecer con otras personas</h3><p>Escuchar, construir acuerdos y reconocer que cada integrante aporta algo al equipo.</p></div>
+            <div class="journey-step"><h3>Aportar al entorno</h3><p>Conectar el crecimiento personal con el cuidado de la naturaleza y la comunidad.</p></div>
+          </div>
+          <p class="mt-7 text-xs leading-relaxed text-body">Conoce más sobre el enfoque educativo en <a class="underline underline-offset-4 text-primary-ink" href="https://www.scout.org/what-we-do/young-people-and-communities/education">World Scouting</a>. Las edades de esta página corresponden al contexto actual del Grupo 5 Mak’Chu.</p>
+        </div>
+      </section>
+      <section class="detail-block" aria-labelledby="overview-faq-title">
+        <div class="detail-heading"><div><p class="eyebrow">Antes de elegir</p><h2 id="overview-faq-title" class="content-title mt-3">Resolvamos las primeras dudas.</h2></div></div>
+        <div class="section-faq">{questions.map((item) => <details><summary>{item.question}<Plus size={18} aria-hidden="true" /></summary><p>{item.answer}</p></details>)}</div>
+      </section>
+      <aside class="mb-16 rounded-2xl border border-outline bg-surface-muted p-7 sm:p-10">
+        <p class="eyebrow">Adultos voluntarios</p><h2 class="mt-3 text-2xl font-extrabold tracking-tight">También puedes aportar tu experiencia.</h2><p class="section-copy mt-3 max-w-xl">El voluntariado adulto es otra forma de ser parte de Mak’Chu. Tiene su propio espacio y no es una quinta sección juvenil.</p><a class="text-link mt-4" href="/#voluntariado">Conocer el voluntariado <ArrowRight size={16} aria-hidden="true" /></a>
+      </aside>
+    </div>
+    <MeetingLocation />
+    <SectionContact />
+  </main>
+  <SiteFooter />
+</SiteLayout>

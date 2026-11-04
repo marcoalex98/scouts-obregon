@@ -1,0 +1,30 @@
+---
+import { ArrowUpRight, Clock3, MapPin } from '@lucide/astro';
+import { site } from '../data/site';
+import '../styles/meeting-location.css';
+const { meeting } = site;
+const mapUrl = `https://maps.google.com/maps?q=${meeting.latitude},${meeting.longitude}&z=17&output=embed&hl=es`;
+---
+<section id="ubicacion" class="meeting-location" aria-labelledby="meeting-title">
+  <div class="page-width meeting-grid">
+    <div>
+      <p class="eyebrow">Ubicación y horario</p>
+      <h2 id="meeting-title" class="meeting-title">Nos vemos<br /> en el parque.</h2>
+      <p class="meeting-intro">Un lugar para encontrarnos, compartir y vivir la aventura scout en {meeting.city}.</p>
+      <dl class="meeting-details">
+        <div>
+          <dt><Clock3 size={22} stroke-width={1.7} aria-hidden="true" />{meeting.day}</dt><dd>{meeting.hours}</dd>
+        </div>
+        <div>
+          <dt><MapPin size={22} stroke-width={1.7} aria-hidden="true" />{meeting.place}</dt><dd>{meeting.reference}</dd>
+        </div>
+      </dl>
+      <a class="button button-primary mt-7" href={meeting.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label="Cómo llegar al parque (abre Google Maps en otra pestaña)">Cómo llegar <ArrowUpRight size={17} aria-hidden="true" /></a>
+    </div>
+    <figure class="meeting-map">
+      <iframe src={mapUrl} title={`Mapa de ${site.name}: ${meeting.place}, ${meeting.city}`} width="720" height="440" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <figcaption>Ubicación de {site.name}. <a href={meeting.mapsUrl} target="_blank" rel="noopener noreferrer">Abrir en Google Maps <span class="sr-only">(otra pestaña)</span></a></figcaption>
+    </figure>
+  </div>
+</section>
+

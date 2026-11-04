@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200">
+  <title>Comunidad - Rosa de los vientos</title>
+  <!-- Background -->
+  <rect width="320" height="200" fill="#DBEAFE" rx="0"/>
+
+  <!-- Secondary: mountain silhouette behind compass -->
+  <polygon points="80,130 160,55 240,130" fill="#60A5FA" opacity="0.3"/>
+  <polygon points="40,130 95,75 150,130" fill="#2563EB" opacity="0.15"/>
+  <polygon points="170,130 225,75 280,130" fill="#2563EB" opacity="0.15"/>
+
+  <!-- MAIN FOCAL ELEMENT: Compass rose centered at 160,105 radius 52 -->
+  <!-- Outer ring -->
+  <circle cx="160" cy="105" r="54" fill="white" stroke="#0C2D5A" stroke-width="2.5" opacity="0.9"/>
+  <circle cx="160" cy="105" r="46" fill="none" stroke="#38BDF8" stroke-width="1" opacity="0.6"/>
+
+  <!-- 8-point compass rose base points (NE/SE/SW/NW) in sky blue -->
+  <polygon points="160,105 150,95 160,62 170,95" fill="#38BDF8" stroke="#0C2D5A" stroke-width="1"/>
+  <polygon points="160,105 170,95 198,105 170,115" fill="#38BDF8" stroke="#0C2D5A" stroke-width="1"/>
+  <polygon points="160,105 170,115 160,148 150,115" fill="#2563EB" stroke="#0C2D5A" stroke-width="1"/>
+  <polygon points="160,105 150,115 122,105 150,95" fill="#2563EB" stroke="#0C2D5A" stroke-width="1"/>
+
+  <!-- Diagonal arms (NE/SE/SW/NW) smaller -->
+  <polygon points="160,105 153,98 177,81 167,98" fill="#60A5FA" opacity="0.8"/>
+  <polygon points="160,105 167,98 184,122 167,112" fill="#60A5FA" opacity="0.8"/>
+  <polygon points="160,105 167,112 143,129 153,112" fill="#60A5FA" opacity="0.6"/>
+  <polygon points="160,105 153,112 136,88 153,98" fill="#60A5FA" opacity="0.6"/>
+
+  <!-- NORTH arrow in orange (dominant direction) -->
+  <polygon points="160,105 150,95 160,58 170,95" fill="#F97316" stroke="#0C2D5A" stroke-width="1.2"/>
+
+  <!-- Center circle -->
+  <circle cx="160" cy="105" r="9" fill="white" stroke="#0C2D5A" stroke-width="2"/>
+  <circle cx="160" cy="105" r="4" fill="#0C2D5A"/>
+
+  <!-- Secondary: dotted path below -->
+  <path d="M80,180 Q120,165 160,172 Q200,179 240,166" fill="none" stroke="#2563EB" stroke-width="2" stroke-dasharray="5,4" opacity="0.5"/>
+
+  <!-- Secondary: small location pin -->
+  <circle cx="240" cy="162" r="6" fill="#F97316" stroke="#0C2D5A" stroke-width="1.5"/>
+  <path d="M240,162 L240,172" stroke="#F97316" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Secondary: 3 small walking figure silhouettes at bottom -->
+  <!-- Figure 1 -->
+  <circle cx="120" cy="183" r="5" fill="#0C2D5A"/>
+  <line x1="120" y1="188" x2="120" y2="197" stroke="#0C2D5A" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="120" y1="192" x2="115" y2="197" stroke="#0C2D5A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="120" y1="192" x2="125" y2="197" stroke="#0C2D5A" stroke-width="2" stroke-linecap="round"/>
+  <!-- Figure 2 -->
+  <circle cx="160" cy="181" r="5" fill="#0C2D5A"/>
+  <line x1="160" y1="186" x2="160" y2="197" stroke="#0C2D5A" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="160" y1="192" x2="155" y2="197" stroke="#0C2D5A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="160" y1="192" x2="165" y2="197" stroke="#0C2D5A" stroke-width="2" stroke-linecap="round"/>
+  <!-- Figure 3 -->
+  <circle cx="200" cy="183" r="5" fill="#0C2D5A"/>
+  <line x1="200" y1="188" x2="200" y2="197" stroke="#0C2D5A" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="200" y1="192" x2="195" y2="197" stroke="#0C2D5A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="200" y1="192" x2="205" y2="197" stroke="#0C2D5A" stroke-width="2" stroke-linecap="round"/>
+</svg>

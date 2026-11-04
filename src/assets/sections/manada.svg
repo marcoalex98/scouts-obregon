@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200">
+  <title>Manada - Huella de lobo</title>
+  <!-- Background -->
+  <rect width="320" height="200" height="200" fill="#FEF3C7" rx="0"/>
+
+  <!-- Secondary: small wolf silhouette top-left -->
+  <g opacity="0.18">
+    <ellipse cx="38" cy="52" rx="18" ry="12" fill="#8B5E34"/>
+    <ellipse cx="38" cy="38" rx="12" ry="10" fill="#8B5E34"/>
+    <!-- ears -->
+    <polygon points="30,32 26,20 36,28" fill="#8B5E34"/>
+    <polygon points="46,32 50,20 40,28" fill="#8B5E34"/>
+    <!-- snout -->
+    <ellipse cx="38" cy="45" rx="6" ry="4" fill="#A0714F"/>
+  </g>
+
+  <!-- Secondary: crescent moon top-right -->
+  <g>
+    <circle cx="284" cy="30" r="14" fill="#FCD34D"/>
+    <circle cx="291" cy="26" r="12" fill="#FEF3C7"/>
+  </g>
+
+  <!-- Secondary: stars -->
+  <polygon points="248,18 250,24 256,24 251,28 253,34 248,30 243,34 245,28 240,24 246,24" fill="#F59E0B" opacity="0.9"/>
+  <polygon points="268,42 269,46 273,46 270,49 271,53 268,50 265,53 266,49 263,46 267,46" fill="#FCD34D" opacity="0.8"/>
+  <polygon points="230,38 231,41 234,41 232,43 233,46 230,44 227,46 228,43 226,41 229,41" fill="#F59E0B" opacity="0.7"/>
+
+  <!-- MAIN FOCAL ELEMENT: Wolf paw print centered -->
+  <!-- Main pad -->
+  <ellipse cx="160" cy="130" rx="38" ry="30" fill="#8B5E34"/>
+  <!-- Toe pads -->
+  <ellipse cx="125" cy="92" rx="16" ry="13" fill="#8B5E34"/>
+  <ellipse cx="148" cy="80" rx="16" ry="13" fill="#8B5E34"/>
+  <ellipse cx="172" cy="80" rx="16" ry="13" fill="#8B5E34"/>
+  <ellipse cx="195" cy="92" rx="16" ry="13" fill="#8B5E34"/>
+  <!-- Inner highlights on main pad -->
+  <ellipse cx="155" cy="126" rx="20" ry="16" fill="#A0714F" opacity="0.4"/>
+
+  <!-- Secondary: small grass/leaves at bottom -->
+  <g fill="#16A34A" opacity="0.7">
+    <ellipse cx="60" cy="186" rx="8" ry="14" transform="rotate(-20 60 186)"/>
+    <ellipse cx="74" cy="182" rx="7" ry="12" transform="rotate(10 74 182)"/>
+    <ellipse cx="240" cy="184" rx="8" ry="14" transform="rotate(20 240 184)"/>
+    <ellipse cx="256" cy="182" rx="7" ry="12" transform="rotate(-10 256 182)"/>
+    <ellipse cx="160" cy="188" rx="6" ry="10" transform="rotate(0 160 188)"/>
+    <ellipse cx="145" cy="186" rx="5" ry="9" transform="rotate(-15 145 186)"/>
+    <ellipse cx="175" cy="186" rx="5" ry="9" transform="rotate(15 175 186)"/>
+  </g>
+  <!-- Orange accent dots on toes -->
+  <ellipse cx="125" cy="90" rx="6" ry="5" fill="#F97316" opacity="0.3"/>
+  <ellipse cx="148" cy="78" rx="6" ry="5" fill="#F97316" opacity="0.3"/>
+  <ellipse cx="172" cy="78" rx="6" ry="5" fill="#F97316" opacity="0.3"/>
+  <ellipse cx="195" cy="90" rx="6" ry="5" fill="#F97316" opacity="0.3"/>
+</svg>

@@ -1,0 +1,19 @@
+---
+import { ChevronRight } from '@lucide/astro';
+import { site } from '../data/site';
+interface Props { items: { label: string; href: string }[] }
+const { items } = Astro.props;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.label, item: new URL(item.href, site.url).href })),
+};
+---
+<nav aria-label="Ruta de navegación" class="breadcrumbs">
+  <ol>
+    {items.map((item, index) => <li>
+      {index > 0 && <ChevronRight size={13} aria-hidden="true" />}
+      {index === items.length - 1 ? <span aria-current="page">{item.label}</span> : <a href={item.href}>{item.label}</a>}
+    </li>)}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')} />

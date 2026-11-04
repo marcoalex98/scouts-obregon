@@ -1,0 +1,129 @@
+---
+import { ArrowUpRight, Moon, Sun } from '@lucide/astro';
+import { navigation, isNavigationActive } from '../data/navigation';
+import { scoutSections, sectionHref } from '../data/sections';
+import '../styles/side-menu.css';
+import FleurDeLis from '../assets/flor-de-lis.svg';
+---
+
+<site-menu>
+  <span class="menu-button-slot">
+    <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="site-menu-dialog" aria-haspopup="dialog">
+      <span></span><span></span><span></span>
+    </button>
+  </span>
+  <dialog id="site-menu-dialog" class="side-menu" aria-labelledby="side-menu-title">
+    <div class="side-menu-panel">
+      <div class="side-menu-heading">
+        <h2 id="side-menu-title" class="flex items-center gap-3 text-lg font-extrabold tracking-tight"><FleurDeLis width="24" height="30" class="shrink-0 text-primary" aria-hidden="true" focusable="false" />Explora Mak’Chu</h2>
+        <span class="menu-close-slot"></span>
+      </div>
+      <div class="side-menu-content">
+        <nav aria-label="Navegación lateral">
+          <a class="side-menu-link" href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>Inicio</a>
+          {navigation.map((item) => (
+            <>
+              <a class="side-menu-link" href={item.href} data-active={isNavigationActive(item.href, Astro.url.pathname)} aria-current={Astro.url.pathname.replace(/\/$/, '') === item.href ? 'page' : undefined}>{item.label}</a>
+              {item.href === '/secciones' && (
+                <div class="side-menu-sections">
+                  {scoutSections.map((section) => (
+                    <a href={sectionHref(section)} data-theme={section.color} aria-current={Astro.url.pathname.replace(/\/$/, '') === sectionHref(section) ? 'page' : undefined}>
+                      <span class="size-2 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
+                      <span>{section.shortName}</span>
+                      <span class="ml-auto text-xs text-muted">{section.minAge}–{section.maxAge} años</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </>
+          ))}
+        </nav>
+        <div class="appearance-panel">
+          <div class="flex items-center justify-between gap-4">
+            <p id="appearance-label" class="text-sm font-bold">Modo oscuro</p>
+            <button type="button" role="switch" aria-checked="false" aria-labelledby="appearance-label" class="appearance-switch" data-appearance-toggle>
+              <Sun size={15} aria-hidden="true" /><Moon size={15} aria-hidden="true" /><span class="switch-thumb"></span>
+            </button>
+          </div>
+        </div>
+        <a class="button button-primary w-full" href="/#unete">Únete al grupo <ArrowUpRight size={16} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </dialog>
+</site-menu>
+
+<script>
+  import '../scripts/appearance';
+
+  class SiteMenu extends HTMLElement {
+    connectedCallback() {
+      const controller = new AbortController();
+      this.cleanup?.();
+      const { signal } = controller;
+      const dialog = this.querySelector<HTMLDialogElement>('dialog')!;
+      const toggle = this.querySelector<HTMLButtonElement>('.menu-toggle')!;
+      const home = this.querySelector('.menu-button-slot')!;
+      const closeSlot = this.querySelector('.menu-close-slot')!;
+      let restoreScroll: (() => void) | undefined;
+      let startedOnBackdrop = false;
+
+      const reset = () => {
+        if (toggle.parentElement !== home) home.append(toggle);
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Abrir menú');
+        restoreScroll?.();
+        restoreScroll = undefined;
+      };
+      const close = () => {
+        if (!dialog.open) return;
+        dialog.close();
+        reset();
+        toggle.focus({ preventScroll: true });
+      };
+      toggle.addEventListener('click', () => {
+        if (dialog.open) { close(); return; }
+        const root = document.documentElement;
+        const body = document.body;
+        const y = window.scrollY;
+        const previous = body.getAttribute('style');
+        root.setAttribute('data-menu-open', '');
+        body.style.position = 'fixed';
+        body.style.top = `-${y}px`;
+        body.style.width = '100%';
+        restoreScroll = () => {
+          if (previous === null) body.removeAttribute('style');
+          else body.setAttribute('style', previous);
+          root.removeAttribute('data-menu-open');
+          window.scrollTo({ top: y, behavior: 'instant' });
+        };
+        // Reuse the actual trigger inside the modal so it remains keyboard-accessible.
+        closeSlot.append(toggle);
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Cerrar menú');
+        dialog.showModal();
+        toggle.focus({ preventScroll: true });
+      }, { signal });
+      dialog.addEventListener('cancel', (event) => { event.preventDefault(); close(); }, { signal });
+      dialog.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') { event.preventDefault(); close(); }
+      }, { signal });
+      dialog.addEventListener('close', () => { if (!dialog.open) reset(); }, { signal });
+      dialog.addEventListener('pointerdown', (event) => { startedOnBackdrop = event.target === dialog; }, { signal });
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog && startedOnBackdrop) close();
+        if (event.target instanceof Element && event.target.closest('a[href]')) close();
+      }, { signal });
+      // Cover anchors, full navigation, history cache, and Astro's optional client router.
+      window.addEventListener('hashchange', close, { signal });
+      window.addEventListener('popstate', close, { signal });
+      window.addEventListener('pagehide', close, { signal });
+      window.addEventListener('pageshow', close, { signal });
+      document.addEventListener('astro:before-preparation', close, { signal });
+      document.addEventListener('astro:before-swap', close, { signal });
+      this.cleanup = () => { close(); controller.abort(); };
+    }
+    private cleanup?: () => void;
+    disconnectedCallback() { this.cleanup?.(); }
+  }
+  if (!customElements.get('site-menu')) customElements.define('site-menu', SiteMenu);
+</script>

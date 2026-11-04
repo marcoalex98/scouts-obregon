@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import { Camera, Images } from '@lucide/astro';
+import type { SectionPhoto } from '../data/section-details';
+interface Props { name: string; photos: SectionPhoto[] }
+const { name, photos } = Astro.props;
+const approvedPhotos = photos.filter((photo) => photo.authorized);
+---
+<section id="galeria" class="detail-block" aria-labelledby="gallery-title">
+  <div class="detail-heading">
+    <div><p class="eyebrow">Galería de {name}</p><h2 id="gallery-title" class="content-title mt-3">Las aventuras también<br /> se guardan en recuerdos.</h2></div>
+    <p class="section-copy max-w-sm">Un espacio para compartir fotografías reales de la sección, con autorización para su publicación.</p>
+  </div>
+  {approvedPhotos.length ? (
+    <div class="section-gallery">
+      {approvedPhotos.map((photo, index) => <figure>
+        <Image src={photo.image} alt={photo.alt} widths={[480, 768, 1152, 1600]} sizes={index === 0 ? '(max-width: 1200px) 100vw, 1152px' : '(max-width: 540px) 100vw, (max-width: 1200px) 50vw, 576px'} loading="lazy" decoding="async" />
+        {photo.caption && <figcaption>{photo.caption}</figcaption>}
+      </figure>)}
+    </div>
+  ) : (
+    <div class="gallery-empty">
+      <div class="gallery-placeholder-lead">
+        <Images size={38} stroke-width={1.3} class="text-primary-ink" aria-hidden="true" />
+        <p class="mt-5 text-lg font-bold">Aquí irán los momentos de {name}.</p>
+        <p class="section-copy mt-2 max-w-sm">Fotografías pendientes de selección y autorización. Por ahora, este espacio no contiene imágenes del grupo.</p>
+      </div>
+      <div class="gallery-placeholder-strip" aria-hidden="true">
+        {[0, 1, 2].map(() => <div><Camera size={25} stroke-width={1.2} /></div>)}
+      </div>
+    </div>
+  )}
+</section>

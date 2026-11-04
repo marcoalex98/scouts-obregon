@@ -1,17 +1,312 @@
 ---
+import { Image } from 'astro:assets';
+import { ArrowDown, ArrowRight, ArrowUpRight, Backpack, Binoculars, Compass, Flame, HandHeart, HeartHandshake, Map, MapPin, Mountain, Plus, Route, Shield, Sparkles, Star, Tent, TreePine, Users } from '@lucide/astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MeetingLocation from '../components/MeetingLocation.astro';
+import SectionCard from '../components/SectionCard.astro';
+import { scoutSections, sectionHref } from '../data/sections';
+import { site, meetingSummary } from '../data/site';
+import tropaGirl from '../assets/characters/tropa_girl.webp';
+import clanBoy from '../assets/characters/clan_boy.webp';
 
+const minAge = Math.min(...scoutSections.map((section) => section.minAge));
+const maxAge = Math.max(...scoutSections.map((section) => section.maxAge));
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, inLanguage: 'es-MX', publisher: { '@id': `${site.url}/#organization` } },
+    { '@type': 'Organization', '@id': `${site.url}/#organization`, name: site.name, url: site.url, location: { '@type': 'Place', name: site.meeting.place, description: site.meeting.reference, address: { '@type': 'PostalAddress', addressLocality: 'Ciudad Obregón', addressRegion: 'Sonora', addressCountry: 'MX' }, geo: { '@type': 'GeoCoordinates', latitude: site.meeting.latitude, longitude: site.meeting.longitude }, hasMap: site.meeting.mapsUrl } },
+  ],
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<SiteLayout
+  title="Scouts en Ciudad Obregón | Grupo Scout 5 Mak’Chu"
+  description="Conoce al Grupo Scout 5 Mak’Chu en Ciudad Obregón. Descubre nuestras secciones de 6 a 21 años y las oportunidades para adultos voluntarios."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
+  <SiteHeader />
+  <main id="contenido">
+    <section class="hero" aria-labelledby="hero-title">
+      <!-- Flor de lis — esquina superior derecha -->
+      <div class="hero-deco hero-deco-right" aria-hidden="true">
+        <svg viewBox="0 0 64 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 3C28 12 19 21 22 31c2 8 7 12 7 18h6c0-6 5-10 7-18C45 21 36 12 32 3Z"/>
+          <path d="M26 49c-1-14-9-24-18-20C0 33 2 44 10 47c-4-6-2-11 3-10 5 1 8 7 8 12Z"/>
+          <path d="M26 49c-1-14-9-24-18-20C0 33 2 44 10 47c-4-6-2-11 3-10 5 1 8 7 8 12Z" transform="translate(64 0) scale(-1 1)"/>
+          <rect x="18" y="49" width="28" height="6" rx="2"/>
+          <path d="M28 55c0 7-3 12-8 15 5 2 9 0 12-4 3 4 7 6 12 4-5-3-8-8-8-15Z"/>
+          <path d="M28 55h8c-1 9 1 15-4 22-5-7-3-13-4-22Z"/>
+        </svg>
+      </div>
+      <!-- Flor de lis — esquina inferior izquierda -->
+      <div class="hero-deco hero-deco-left" aria-hidden="true">
+        <svg viewBox="0 0 64 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 3C28 12 19 21 22 31c2 8 7 12 7 18h6c0-6 5-10 7-18C45 21 36 12 32 3Z"/>
+          <path d="M26 49c-1-14-9-24-18-20C0 33 2 44 10 47c-4-6-2-11 3-10 5 1 8 7 8 12Z"/>
+          <path d="M26 49c-1-14-9-24-18-20C0 33 2 44 10 47c-4-6-2-11 3-10 5 1 8 7 8 12Z" transform="translate(64 0) scale(-1 1)"/>
+          <rect x="18" y="49" width="28" height="6" rx="2"/>
+          <path d="M28 55c0 7-3 12-8 15 5 2 9 0 12-4 3 4 7 6 12 4-5-3-8-8-8-15Z"/>
+          <path d="M28 55h8c-1 9 1 15-4 22-5-7-3-13-4-22Z"/>
+        </svg>
+      </div>
+      <div class="page-width hero-inner">
+        <p class="eyebrow hero-eyebrow justify-center"><span class="hero-dot" aria-hidden="true"></span>Scouts en Ciudad Obregón</p>
+        <h1 id="hero-title">La aventura de<br /><span>crecer juntos.</span></h1>
+        <p class="hero-description">Amigos, nuevos retos y un mundo por descubrir.<br class="hidden sm:block" /> Encuentra tu lugar en el Grupo Scout 5 Mak’Chu.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a class="button hero-btn-primary" href="#unete">Quiero unirme <ArrowRight size={17} aria-hidden="true" /></a>
+          <a class="button hero-btn-secondary" href="#secciones">Explorar secciones <ArrowDown size={16} aria-hidden="true" /></a>
+        </div>
+        <!-- Badges de secciones -->
+        <div class="hero-chips" aria-label="Secciones del grupo">
+          <a class="hero-chip hero-chip--yellow" href="/secciones/manada">
+            <Sparkles size={14} aria-hidden="true" />Manada · 6–9 años
+          </a>
+          <a class="hero-chip hero-chip--green" href="/secciones/tropa">
+            <Compass size={14} aria-hidden="true" />Tropa · 10–13 años
+          </a>
+          <a class="hero-chip hero-chip--blue" href="/secciones/comunidad">
+            <Route size={14} aria-hidden="true" />Caminantes · 14–17 años
+          </a>
+          <a class="hero-chip hero-chip--red" href="/secciones/clan">
+            <HandHeart size={14} aria-hidden="true" />Clan · 18–21 años
+          </a>
+        </div>
+        <p class="hero-location"><MapPin size={14} aria-hidden="true" /> Ciudad Obregón, Sonora <span aria-hidden="true">·</span> De {minAge} a {maxAge} años</p>
+      </div>
+      <!-- Silueta de montañas -->
+      <div class="hero-mountains" aria-hidden="true">
+        <svg viewBox="0 0 1440 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,180 L0,130 L90,70 L190,110 L320,35 L460,105 L550,60 L670,125 L770,45 L890,115 L1010,55 L1130,120 L1250,65 L1370,105 L1440,80 L1440,180 Z" fill="rgba(125,211,252,.06)"/>
+          <path d="M0,180 L0,150 L130,95 L250,138 L370,78 L490,132 L610,92 L730,148 L850,92 L970,138 L1090,98 L1210,142 L1330,102 L1440,128 L1440,180 Z" fill="rgba(255,255,255,.045)"/>
+        </svg>
+      </div>
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,36 C320,72 800,0 1440,42 L1440,72 L0,72 Z" fill="var(--surface-page)"/>
+        </svg>
+      </div>
+      <div class="hero-char-left" aria-hidden="true">
+        <Image src={tropaGirl} alt="" width={200} height={400} />
+      </div>
+      <div class="hero-char-right" aria-hidden="true">
+        <Image src={clanBoy} alt="" width={200} height={400} />
+      </div>
+    </section>
+
+    <!-- Ticker de actividades -->
+    <div class="activity-strip" aria-hidden="true">
+      <div class="activity-track">
+        <span class="activity-item"><Tent size={15} />Acampadas</span>
+        <span class="activity-item"><Flame size={15} />Fogatas</span>
+        <span class="activity-item"><Map size={15} />Exploración</span>
+        <span class="activity-item"><Mountain size={15} />Montañismo</span>
+        <span class="activity-item"><Star size={15} />Logros</span>
+        <span class="activity-item"><Shield size={15} />Valores</span>
+        <span class="activity-item"><Backpack size={15} />Aventura</span>
+        <span class="activity-item"><Binoculars size={15} />Observación</span>
+        <span class="activity-item"><TreePine size={15} />Naturaleza</span>
+        <span class="activity-item"><Sparkles size={15} />Creatividad</span>
+        <!-- Duplicado para loop infinito -->
+        <span class="activity-item"><Tent size={15} />Acampadas</span>
+        <span class="activity-item"><Flame size={15} />Fogatas</span>
+        <span class="activity-item"><Map size={15} />Exploración</span>
+        <span class="activity-item"><Mountain size={15} />Montañismo</span>
+        <span class="activity-item"><Star size={15} />Logros</span>
+        <span class="activity-item"><Shield size={15} />Valores</span>
+        <span class="activity-item"><Backpack size={15} />Aventura</span>
+        <span class="activity-item"><Binoculars size={15} />Observación</span>
+        <span class="activity-item"><TreePine size={15} />Naturaleza</span>
+        <span class="activity-item"><Sparkles size={15} />Creatividad</span>
+      </div>
+    </div>
+
+    <section id="secciones" class="page-width section-spacing" aria-labelledby="sections-title">
+      <div class="section-intro">
+        <div>
+          <p class="eyebrow">Nuestras secciones</p>
+          <h2 id="sections-title" class="section-title mt-4">Una aventura para<br class="hidden sm:block" /> cada etapa.</h2>
+        </div>
+        <p class="max-w-sm text-sm leading-[1.9] text-muted">Desde los primeros descubrimientos hasta los proyectos que dejan huella. Encuentra la sección que va contigo.</p>
+      </div>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {scoutSections.map((section) => <SectionCard section={section} compact />)}
+      </div>
+      <a class="text-link mt-6" href="/secciones">Explorar todas las secciones <ArrowRight size={16} aria-hidden="true" /></a>
+    </section>
+
+    <section id="el-grupo" class="group-section" aria-labelledby="group-title">
+      <div class="page-width py-16 sm:py-20">
+        <div class="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+          <div>
+            <p class="eyebrow">Somos Mak’Chu</p>
+            <h2 id="group-title" class="section-title mt-4">Lo que vivimos<br /> nos hace crecer.</h2>
+            <p class="mt-5 max-w-md text-sm leading-[1.9] text-body">Somos el Grupo Scout 5 Mak’Chu, de Ciudad Obregón, Provincia Sonora. Creemos en aprender haciendo y en crecer junto a otras personas.</p>
+            <p class="group-years mt-4"><span>+25</span> años en Ciudad Obregón</p>
+          </div>
+          <div class="grid gap-7 sm:grid-cols-3 lg:gap-6 lg:pt-3">
+            <div><span class="value-icon vi-orange" aria-hidden="true"><Users size={26} stroke-width={1.6} /></span><h3 class="mt-4 text-sm font-extrabold">Amistad</h3><p class="mt-2 text-[13px] leading-[1.85] text-body">Un equipo con el que compartir, colaborar y ser tú mismo.</p></div>
+            <div><span class="value-icon vi-sky" aria-hidden="true"><Compass size={26} stroke-width={1.6} /></span><h3 class="mt-4 text-sm font-extrabold">Descubrimiento</h3><p class="mt-2 text-[13px] leading-[1.85] text-body">Nuevos retos para conocer tus habilidades y seguir aprendiendo.</p></div>
+            <div><span class="value-icon vi-navy" aria-hidden="true"><HeartHandshake size={26} stroke-width={1.6} /></span><h3 class="mt-4 text-sm font-extrabold">Servicio</h3><p class="mt-2 text-[13px] leading-[1.85] text-body">El compromiso de aportar algo bueno a nuestra comunidad.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="familias" class="page-width section-spacing" aria-labelledby="families-title">
+      <div class="grid gap-10 lg:grid-cols-[.85fr_1.15fr] lg:gap-24">
+        <div>
+          <p class="eyebrow">Para madres y padres</p>
+          <h2 id="families-title" class="section-title mt-4">Su aventura.<br /> Tu tranquilidad.</h2>
+          <p class="mt-5 max-w-sm text-sm leading-[1.9] text-muted">Entender qué es el escultismo es el primer paso. Aquí resolvemos algunas dudas para que conozcas mejor al grupo.</p>
+          <a class="text-link mt-4" href="#unete">Quiero más información <ArrowUpRight size={16} aria-hidden="true" /></a>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary><span>¿Qué sección corresponde a su edad?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer">
+              <p>Las secciones acompañan distintas etapas de crecimiento:</p>
+              <ul class="mt-3 grid gap-2">
+                {scoutSections.map((section) => (
+                  <li><a class="underline decoration-outline-strong underline-offset-4 hover:text-primary-ink" href={sectionHref(section)}>{section.name}: {section.minAge} a {section.maxAge} años.</a></li>
+                ))}
+              </ul>
+            </div>
+          </details>
+          <details>
+            <summary><span>¿Qué se aprende en los scouts?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer"><p>El enfoque cambia con cada etapa: desde la imaginación y la convivencia en Manada hasta el servicio y el proyecto de vida en Clan. El trabajo en equipo, la autonomía y el liderazgo forman parte de ese camino.</p></div>
+          </details>
+          <details>
+            <summary><span>¿También pueden participar personas adultas?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer"><p>Sí, a través del voluntariado. Es una forma de colaborar con las experiencias formativas del grupo. <a class="underline underline-offset-4" href="#voluntariado">Conoce el apartado de Adultos voluntarios.</a></p></div>
+          </details>
+          <details>
+            <summary><span>¿Dónde se reúnen y cómo puedo inscribirme?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer"><p>{meetingSummary} <a class="underline underline-offset-4" href="#ubicacion">Ver ubicación en el mapa.</a> Las cuotas y el proceso de incorporación están pendientes de confirmación para este sitio.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="voluntariado" class="page-width pb-20 sm:pb-24" aria-labelledby="volunteers-title">
+      <div class="volunteer-panel">
+        <div class="max-w-xl">
+          <p class="eyebrow">Adultos voluntarios</p>
+          <h2 id="volunteers-title" class="section-title mt-4">Tu experiencia también<br class="hidden sm:block" /> puede dejar huella.</h2>
+          <p class="mt-5 max-w-lg text-sm leading-[1.9] text-body">Comparte tu tiempo y tus habilidades para acompañar a las nuevas generaciones. El voluntariado sostiene las experiencias que hacen crecer al grupo.</p>
+        </div>
+        <div class="shrink-0">
+          <a class="button button-primary" href="#unete">Quiero ser voluntario <ArrowUpRight size={16} aria-hidden="true" /></a>
+          <p class="mt-3 text-xs text-muted">Hay más de una forma de ser parte.</p>
+        </div>
+      </div>
+    </section>
+
+    <MeetingLocation />
+    <section id="unete" class="join-section" aria-labelledby="join-title">
+      <div class="page-width py-16 text-center sm:py-20">
+        <p class="eyebrow justify-center">Únete a Mak’Chu</p>
+        <h2 id="join-title" class="section-title mt-4">El siguiente paso<br /> empieza contigo.</h2>
+        <p class="mx-auto mt-5 max-w-lg text-sm leading-[1.9] text-body">Ya sea para vivir tu primera aventura scout o para compartir tu experiencia como voluntario, nos gustaría conocerte.</p>
+        {site.contact ? (
+          <a class="button button-primary mt-7" href={site.contact.href}>{site.contact.label} <ArrowUpRight size={16} aria-hidden="true" /></a>
+        ) : (
+          <div class="contact-pending mx-auto mt-7 max-w-md">
+            <p class="text-xs font-bold text-primary-ink">Contacto por confirmar</p>
+            <p class="mt-2 text-xs leading-relaxed text-body">Aquí estará el canal institucional para solicitar información. Esta vista previa todavía no recibe solicitudes.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</SiteLayout>
+
+<style>
+  .hero { position: relative; display: flex; align-items: center; min-height: calc(100vh - var(--site-header-height)); min-height: calc(100dvh - var(--site-header-height)); padding: clamp(2rem, 6vh, 5rem) 0 0; text-align: center; overflow: hidden; background-color: #0C2D5A; background-image: linear-gradient(150deg, #0A2342 0%, #0C2D5A 55%, #0D3870 100%), radial-gradient(rgba(125,211,252,.13) 1px, transparent 1px); background-size: cover, 28px 28px; }
+  .hero-deco { position: absolute; aspect-ratio: 64/80; pointer-events: none; user-select: none; }
+  .hero-deco svg { width: 100%; height: 100%; }
+  .hero-deco-right { right: -5%; top: -8%; width: min(50vw, 440px); color: rgba(255,255,255,.045); transform: rotate(12deg); }
+  .hero-deco-left { left: -4%; bottom: 8%; width: min(30vw, 260px); color: rgba(249,115,22,.06); transform: rotate(-18deg); }
+  .hero-inner { position: relative; z-index: 1; padding-bottom: 5rem; }
+  .hero-eyebrow { color: #7DD3FC; }
+  .hero-dot { display: inline-block; width: .45rem; height: .45rem; border-radius: 99px; background: #F97316; }
+  .hero h1 { margin: 1.5rem auto 1.4rem; font-size: clamp(3rem, 7.4vw, 6.7rem); line-height: 1.07; font-weight: 800; letter-spacing: -.03em; color: #fff; }
+  .hero h1 span { color: #F97316; }
+  .hero-description { max-width: 36rem; margin-inline: auto; font-size: clamp(.94rem, 1.6vw, 1.12rem); line-height: 1.9; color: #BAE6FD; }
+  .hero-btn-primary { background: #F97316; color: #fff; border-color: transparent; border-radius: 99px; }
+  .hero-btn-primary:hover { background: #EA580C; }
+  .hero-btn-secondary { border-radius: 99px; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; }
+  .hero-btn-secondary:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.45); }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .55rem; margin-top: 2rem; }
+  .hero-chip { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .9rem; border-radius: 99px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); backdrop-filter: blur(8px); font-size: .72rem; font-weight: 700; color: #fff; white-space: nowrap; text-decoration: none; transition: background .18s, border-color .18s; animation: heroFloat 4s ease-in-out infinite; }
+  .hero-chip:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); }
+  .hero-chip--yellow { animation-delay: 0s; }
+  .hero-chip--yellow svg { color: #FCD34D; }
+  .hero-chip--green { animation-delay: .45s; }
+  .hero-chip--green svg { color: #6EE7B7; }
+  .hero-chip--blue { animation-delay: .9s; }
+  .hero-chip--blue svg { color: #7DD3FC; }
+  .hero-chip--red { animation-delay: 1.35s; }
+  .hero-chip--red svg { color: #FCA5A5; }
+  @keyframes heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  .hero-location { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem; margin-top: 1.5rem; color: #7DD3FC; font-size: .7rem; }
+  .hero-mountains { position: absolute; bottom: clamp(44px, 5.5vw, 72px); left: 0; width: 100%; pointer-events: none; }
+  .hero-mountains svg { display: block; width: 100%; height: clamp(80px, 14vw, 180px); }
+  .hero-wave { position: absolute; bottom: 0; left: 0; width: 100%; line-height: 0; }
+  .hero-wave svg { display: block; width: 100%; height: clamp(44px, 5.5vw, 72px); }
+  /* Ticker de actividades */
+  .activity-strip { overflow: hidden; border-block: 1px solid var(--border-subtle); padding-block: .85rem; background: linear-gradient(90deg, light-dark(#fff7ed, #1c1917) 0%, light-dark(#ffffff, #0f172a) 50%, light-dark(#f0f9ff, #082f49) 100%); }
+  .activity-track { display: flex; width: max-content; animation: activityScroll 30s linear infinite; }
+  .activity-track:hover { animation-play-state: paused; }
+  .activity-item { display: inline-flex; align-items: center; gap: .5rem; padding: .25rem 1.6rem; font-size: .76rem; font-weight: 700; color: var(--content-muted); white-space: nowrap; letter-spacing: .01em; }
+  .activity-item svg { color: var(--theme-primary); flex-shrink: 0; }
+  .activity-item::after { content: '◆'; font-size: .38rem; margin-left: 1.6rem; color: var(--theme-primary-border); vertical-align: middle; }
+  @keyframes activityScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  /* Iconos de valores */
+  .value-icon { display: inline-grid; width: 3.4rem; height: 3.4rem; place-items: center; border: 1px solid rgba(255,255,255,.22); border-radius: 1rem; box-shadow: 0 .65rem 1.5rem rgba(0,0,0,.16); }
+  .vi-orange { background: #F97316; color: #fff; }
+  .vi-sky { background: #38BDF8; color: #071E3D; }
+  .vi-navy { background: #0D3870; color: #fff; }
+  @media (prefers-reduced-motion: reduce) { .activity-track { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero-chip { animation: none; } }
+  .section-spacing { padding-block: 5.5rem; }
+  .section-title { font-size: clamp(1.9rem, 3.4vw, 2.8rem); line-height: 1.2; font-weight: 800; letter-spacing: -.05em; color: var(--content-heading); }
+  .section-intro { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
+  .group-section { --content-heading: #fff; --content-body: #fff; --theme-primary-ink: #7DD3FC; border-block: 1px solid rgba(125,211,252,.2); background: linear-gradient(135deg, #071E3D 0%, #0C2D5A 52%, #0D3870 100%); color: #fff; }
+  .group-years { display: inline-flex; align-items: center; gap: .6rem; font-size: .8rem; font-weight: 700; color: #7DD3FC; }
+  .group-years span { font-size: 2rem; font-weight: 800; letter-spacing: -.04em; color: #F97316; line-height: 1; }
+  .group-section .section-title, .group-section .text-body { color: #fff; }
+  .faq-list { display: grid; gap: .75rem; }
+  .faq-list details { overflow: hidden; border: 1px solid var(--border-default); border-radius: 1rem; background: var(--surface-raised); transition: border-color .18s ease, box-shadow .18s ease; }
+  .faq-list details[open] { border-color: var(--theme-primary-border); box-shadow: 0 .65rem 1.5rem color-mix(in srgb, var(--theme-primary) 8%, transparent); }
+  .faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; padding: 1.2rem 1.35rem; font-size: .85rem; font-weight: 800; cursor: pointer; list-style: none; }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary:hover { color: var(--theme-primary); }
+  .faq-plus { flex-shrink: 0; color: var(--content-muted); }
+  details[open] .faq-plus { transform: rotate(45deg); }
+  .faq-answer { padding: 0 3.75rem 1.4rem 1.35rem; color: var(--content-body); font-size: .82rem; line-height: 1.9; }
+  .volunteer-panel { --content-heading: #fff; --content-body: #fff; --content-muted: #FFEDD5; --theme-primary-ink: #fff; display: flex; justify-content: space-between; align-items: center; gap: 3rem; padding: 3.2rem; border: 1px solid rgba(255,255,255,.25); border-radius: 1.5rem; background: linear-gradient(135deg, #C2410C 0%, #EA580C 52%, #F97316 100%); color: #fff; box-shadow: 0 1.25rem 3rem rgba(194,65,12,.22); }
+  .volunteer-panel .section-title, .volunteer-panel .text-body { color: #fff; }
+  .volunteer-panel .button-primary { background: #fff; color: #C2410C; box-shadow: 0 .65rem 1.5rem rgba(124,45,18,.22); }
+  .volunteer-panel .button-primary:hover { background: #FFF7ED; }
+  .join-section { --content-heading: #fff; --content-body: #fff; --theme-primary-ink: #7DD3FC; position: relative; overflow: hidden; border-block: 1px solid rgba(125,211,252,.2); background: linear-gradient(135deg, #071E3D 0%, #0C2D5A 55%, #0D3870 100%); color: #fff; }
+  .join-section::before { position: absolute; inset: 0; background: radial-gradient(circle at 50% 15%, rgba(249,115,22,.42) 0%, rgba(249,115,22,.14) 24%, transparent 58%); content: ''; pointer-events: none; }
+  .join-section > .page-width { position: relative; z-index: 1; }
+  .join-section .section-title, .join-section .text-body { color: #fff; }
+  .contact-pending { padding: 1rem 1.5rem; border: 1px dashed var(--theme-primary-border); border-radius: .65rem; background: var(--surface-raised); }
+  @media (max-width: 1023px) { .volunteer-panel { align-items: start; flex-direction: column; gap: 1.8rem; } }
+  @media (max-width: 767px) { .section-intro { flex-direction: column; align-items: start; gap: 1.25rem; } }
+  @media (max-width: 640px) { .section-spacing { padding-block: 3.5rem; } .volunteer-panel { padding: 1.8rem 1.5rem; } }
+  @media (max-width: 640px) { .hero h1 { font-size: clamp(2.65rem, 10.5vw, 4.3rem); } }
+  /* Side characters in hero */
+  .hero-char-left, .hero-char-right { position: absolute; bottom: clamp(44px, 5.5vw, 72px); pointer-events: none; z-index: 2; }
+  .hero-char-left img, .hero-char-right img { display: block; height: clamp(18rem, 28vw, 30rem); width: auto; filter: drop-shadow(0 4px 20px rgba(0,0,0,.35)); }
+  .hero-char-left { left: max(0px, calc((100% - 1280px) / 2)); }
+  .hero-char-right { right: max(0px, calc((100% - 1280px) / 2)); transform: scaleX(-1); }
+  @media (max-width: 1024px) { .hero-char-left, .hero-char-right { display: none; } }
+</style>

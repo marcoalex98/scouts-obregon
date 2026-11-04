@@ -1,0 +1,58 @@
+---
+import '@fontsource-variable/manrope/wght.css';
+import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  theme?: 'purple' | 'yellow' | 'green' | 'blue' | 'red';
+}
+
+const { title, description, theme = 'purple' } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url);
+const previewImage = new URL('/og.png', site.url);
+---
+
+<!doctype html>
+<html lang="es-MX" data-theme={theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      // Apply only the saved appearance before paint; CSS handles the system fallback.
+      try {
+        const appearance = localStorage.getItem('makchu-appearance');
+        if (appearance === 'light' || appearance === 'dark') {
+          document.documentElement.dataset.appearance = appearance;
+        }
+      } catch {}
+    </script>
+    <link rel="icon" href={site.logo?.src ?? 'data:,'} />
+    {import.meta.env.DEV && <meta name="robots" content="noindex, nofollow" />}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={previewImage} />
+    <meta property="og:image:width" content="1731" />
+    <meta property="og:image:height" content="909" />
+    <meta property="og:image:alt" content="La aventura de crecer juntos. Scouts en Ciudad Obregón. Grupo Scout 5 Mak’Chu." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={previewImage} />
+    <meta name="twitter:image:alt" content="La aventura de crecer juntos. Scouts en Ciudad Obregón. Grupo Scout 5 Mak’Chu." />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <slot />
+  </body>
+</html>
