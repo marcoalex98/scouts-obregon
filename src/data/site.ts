@@ -4,6 +4,7 @@ type SiteConfig = {
   url: string;
   logo: { src: string; width: number; height: number } | null;
   contact: { href: string; label: string } | null;
+  volunteerWhatsapp: { number: string | null; contact: string };
   meeting: {
     place: string;
     city: string;
@@ -11,8 +12,8 @@ type SiteConfig = {
     day: string;
     hours: string;
     mapsUrl: string;
-    latitude: number;
-    longitude: number;
+    latitude?: number;
+    longitude?: number;
   };
 };
 
@@ -23,13 +24,14 @@ export const site: SiteConfig = {
   url: 'https://scoutsobregon.com',
   logo: null,
   contact: null,
+  volunteerWhatsapp: { number: '526441966665', contact: 'German' },
   meeting: {
-    place: 'Parque de la colonia del Valle',
+    place: 'Parque sobre la calle Hidalgo',
     city: 'Ciudad Obregón, Sonora',
-    reference: 'Frente a Plaza Tutuli, detrás de KFC.',
+    reference: 'Entre las calles California y Quintana Roo.',
     day: 'Sábados',
     hours: '4:00 a 6:00 p. m.',
-    mapsUrl: 'https://maps.app.goo.gl/EnxtCn9FLkfAmh5g9',
+    mapsUrl: 'https://maps.app.goo.gl/uLcTgKxmcd5UPXgx5',
     latitude: 27.4956628,
     longitude: -109.947079,
   },

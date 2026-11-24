@@ -11,6 +11,7 @@ import MeetingLocation from '../../components/MeetingLocation.astro';
 import { meetingSummary } from '../../data/site';
 import { scoutSections, sectionHref, type ScoutSection } from '../../data/sections';
 import { sectionDetails, type SectionDetails } from '../../data/section-details';
+import { galleryPhotosForSection } from '../../data/gallery';
 import '../../styles/sections.css';
 import manadaGirl from '../../assets/characters/manada_girl.webp';
 import manadaBoy from '../../assets/characters/manada_boy.webp';
@@ -20,21 +21,30 @@ import comunidadGirl from '../../assets/characters/comunidad_girl.webp';
 import comunidadBoy from '../../assets/characters/comunidad_boy.webp';
 import clanGirl from '../../assets/characters/clan_girl.webp';
 import clanBoy from '../../assets/characters/clan_boy.webp';
+import avatarManada from '../../assets/characters/avatar/avatar-manada.webp';
+import avatarTropa from '../../assets/characters/avatar/avatar-tropa.webp';
+import avatarComunidad from '../../assets/characters/avatar/avatar-comunidad.webp';
+import avatarClan from '../../assets/characters/avatar/avatar-clan.webp';
+const avatars = { manada: avatarManada, tropa: avatarTropa, comunidad: avatarComunidad, clan: avatarClan };
 
 export function getStaticPaths() {
   return scoutSections.map((section) => ({ params: { slug: section.slug }, props: { section, details: sectionDetails[section.slug] } }));
 }
 interface Props { section: ScoutSection; details: SectionDetails }
 const { section, details } = Astro.props;
+const sectionPhotos = galleryPhotosForSection(section.slug);
 const icons = { sparkles: Sparkles, compass: Compass, route: Route, 'hand-heart': HandHeart };
 const Icon = icons[section.icon];
 const otherSections = scoutSections.filter((other) => other.slug !== section.slug);
 const heroChars = { manada: { girl: manadaGirl, boy: manadaBoy }, tropa: { girl: tropaGirl, boy: tropaBoy }, comunidad: { girl: comunidadGirl, boy: comunidadBoy }, clan: { girl: clanGirl, boy: clanBoy } }[section.slug];
+const waMessage = `Hola ${section.whatsapp.contact}, me comunico desde el sitio web del Grupo Scout 5 Mak'Chu. Estoy interesado/a en unirme a la ${section.name} (${section.minAge}–${section.maxAge} años). ¿Me podrías orientar sobre el proceso de inscripción?`;
+const waHref = section.whatsapp.number ? `https://wa.me/${section.whatsapp.number}?text=${encodeURIComponent(waMessage)}` : '/contacto';
 const questions = [
   { question: `¿Para qué edades es ${section.name}?`, answer: `${section.name} corresponde a participantes de ${section.minAge} a ${section.maxAge} años en el Grupo Scout 5 Mak’Chu. Si estás cerca de un cambio de etapa, confirma con el grupo la forma de incorporación o transición.` },
   ...details.questions,
   { question: '¿Dónde se reúnen y en qué horario?', answer: meetingSummary },
 ];
+const faqSchema = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: questions.map((q) => ({ '@type': 'Question', name: q.question, acceptedAnswer: { '@type': 'Answer', text: q.answer } })) }).replace(/</g, '\\u003c');
 const toc = [
   { label: 'La etapa', href: '#la-etapa' }, { label: 'Actividades', href: '#actividades' },
   { label: 'Aprendizajes', href: '#aprendizajes' }, { label: section.slug === 'clan' ? 'Tu camino' : 'Para familias', href: '#acompanamiento' },
@@ -43,6 +53,7 @@ const toc = [
 ];
 ---
 <SiteLayout theme={section.color} title={`${section.name} en Ciudad Obregón | ${section.minAge}–${section.maxAge} años | Mak’Chu`} description={`Conoce ${section.name} del Grupo Scout 5 Mak’Chu, para edades de ${section.minAge} a ${section.maxAge} años. Actividades orientativas, aprendizajes, galería y preguntas frecuentes.`}>
+  <script slot="head" type="application/ld+json" set:html={faqSchema} />
   <SiteHeader />
   <main id="contenido">
     <div class="page-width">
@@ -53,7 +64,7 @@ const toc = [
           <h1 id="detail-title" class="page-title mt-5">{section.name}</h1>
           <p class="mt-5"><span class="age-tag">De {section.minAge} a {section.maxAge} años</span></p>
           <p class="section-copy mt-5 max-w-xl">{section.summary}</p>
-          <div class="mt-7 flex flex-wrap gap-3"><a class="button button-primary" href="#informacion">Quiero unirme <ArrowRight size={16} aria-hidden="true" /></a><a class="button button-secondary" href="#galeria">Ver galería</a></div>
+          <div class="mt-7 flex flex-wrap gap-3"><a class="button button-primary" href={waHref} target={section.whatsapp.number ? '_blank' : undefined} rel={section.whatsapp.number ? 'noopener noreferrer' : undefined}>Quiero unirme <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.123 1.532 5.855L0 24l6.302-1.517A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.794 9.794 0 0 1-5.003-1.374l-.358-.214-3.742.9.937-3.63-.234-.373A9.76 9.76 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg></a><a class="button button-secondary" href="#galeria">Ver galería</a></div>
         </div>
         <div class="detail-hero-right">
           <div class="detail-chars" aria-hidden="true">
@@ -86,19 +97,24 @@ const toc = [
         <p class="section-copy max-w-3xl mb-8">{details.guidanceIntro}</p>
         <div class="guidance-grid">{details.guidance.map((item) => <div class="guidance-item"><h3>{item.title}</h3><p>{item.text}</p></div>)}</div>
       </section>
-      <SectionGallery name={section.shortName} photos={details.gallery} />
+      <SectionGallery name={section.shortName} photos={sectionPhotos} />
       <section id="preguntas" class="detail-block" aria-labelledby="faq-title">
         <div class="detail-heading"><div><p class="eyebrow">Preguntas frecuentes</p><h2 id="faq-title" class="content-title mt-3">Lo que quizá<br /> te estás preguntando.</h2></div></div>
-        <div class="section-faq">{questions.map((item) => <details><summary>{item.question}<Plus size={18} aria-hidden="true" /></summary><p>{item.answer}</p></details>)}</div>
+        <div class="section-faq section-faq--spaced">{questions.map((item) => <details><summary>{item.question}<Plus size={18} aria-hidden="true" /></summary><p>{item.answer}</p></details>)}</div>
       </section>
       <section class="detail-block" aria-labelledby="other-title">
         <div class="detail-heading"><div><p class="eyebrow">El grupo completo</p><h2 id="other-title" class="content-title mt-3">Conoce las otras etapas.</h2></div><a class="text-link" href="/secciones">Comparar secciones <ArrowRight size={16} aria-hidden="true" /></a></div>
-        <div class="next-sections">{otherSections.map((other) => <a href={sectionHref(other)} data-theme={other.color}><span><strong>{other.name}</strong><span>{other.minAge} a {other.maxAge} años</span></span><ArrowRight size={18} class="shrink-0" aria-hidden="true" /></a>)}</div>
+        <div class="next-sections">{otherSections.map((other) => <a href={sectionHref(other)} data-theme={other.color}><Image src={avatars[other.slug]} alt="" width={44} height={44} class="next-section-avatar" /><span><strong>{other.name}</strong><span>{other.minAge} a {other.maxAge} años</span></span><ArrowRight size={18} class="shrink-0" aria-hidden="true" /></a>)}</div>
       </section>
     </div>
     <MeetingLocation />
-    <SectionContact name={section.shortName} />
+    <SectionContact name={section.shortName} waHref={waHref} />
   </main>
+  {section.whatsapp.number && (
+    <a class="wa-fab" href={waHref} target="_blank" rel="noopener noreferrer" aria-label={`Escribir a ${section.whatsapp.contact} por WhatsApp`}>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.123 1.532 5.855L0 24l6.302-1.517A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.794 9.794 0 0 1-5.003-1.374l-.358-.214-3.742.9.937-3.63-.234-.373A9.76 9.76 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+    </a>
+  )}
   <SiteFooter />
 </SiteLayout>
 
@@ -110,5 +126,9 @@ const toc = [
   .hero-char-boy { height: 20rem; }
   .stage-card-connected { border-radius: 0 0 1.5rem 1.5rem !important; border-top: none !important; }
   .stage-card-connected::before { display: none; }
+  .next-section-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; object-fit: cover; border: 2px solid var(--theme-primary-border); flex-shrink: 0; }
   @media (max-width: 767px) { .detail-chars { height: 16rem; } .hero-char-girl { height: 15rem; } .hero-char-boy { height: 15rem; } }
+  .wa-fab { position: fixed; bottom: 1.75rem; right: 1.75rem; z-index: 50; display: inline-flex; align-items: center; gap: .65rem; padding: .8rem 1.3rem .8rem 1rem; border-radius: 99px; background: var(--theme-primary); color: var(--theme-on-primary); font-size: .84rem; font-weight: 800; text-decoration: none; box-shadow: 0 4px 20px color-mix(in srgb, var(--theme-primary) 40%, transparent); transition: transform .2s, box-shadow .2s; }
+  .wa-fab:hover { transform: translateY(-3px); box-shadow: 0 8px 28px color-mix(in srgb, var(--theme-primary) 45%, transparent); }
+  @media (max-width: 540px) { .wa-fab span { display: none; } .wa-fab { padding: .9rem; } }
 </style>

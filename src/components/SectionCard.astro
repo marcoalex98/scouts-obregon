@@ -1,33 +1,22 @@
 ---
 import { Image } from 'astro:assets';
-import { ArrowRight, Check, Compass, HandHeart, Route, Sparkles } from '@lucide/astro';
+import { ArrowRight, Check } from '@lucide/astro';
 import { sectionHref, type ScoutSection } from '../data/sections';
-import manadaGirl from '../assets/characters/manada_girl.webp';
-import manadaBoy from '../assets/characters/manada_boy.webp';
-import tropaGirl from '../assets/characters/tropa_girl.webp';
-import tropaBoy from '../assets/characters/tropa_boy.webp';
-import comunidadGirl from '../assets/characters/comunidad_girl.webp';
-import comunidadBoy from '../assets/characters/comunidad_boy.webp';
-import clanGirl from '../assets/characters/clan_girl.webp';
-import clanBoy from '../assets/characters/clan_boy.webp';
+import type { ImageMetadata } from 'astro';
 
-interface Props { section: ScoutSection; compact?: boolean }
-const { section, compact = false } = Astro.props;
-const icons = { sparkles: Sparkles, compass: Compass, route: Route, 'hand-heart': HandHeart };
-const Icon = icons[section.icon];
-const chars = { manada: { girl: manadaGirl, boy: manadaBoy }, tropa: { girl: tropaGirl, boy: tropaBoy }, comunidad: { girl: comunidadGirl, boy: comunidadBoy }, clan: { girl: clanGirl, boy: clanBoy } }[section.slug];
+interface Props { section: ScoutSection; compact?: boolean; avatar?: ImageMetadata }
+const { section, compact = false, avatar } = Astro.props;
 ---
 
 <article id={section.slug} data-theme={section.color} class:list={['section-card', { 'section-card-compact': compact }]} aria-labelledby={`${section.slug}-title`}>
-  <div class="char-shelf" aria-hidden="true">
-    <Image src={chars.boy} alt="" width={80} height={160} class="char-boy" />
-    <Image src={chars.girl} alt="" width={90} height={180} class="char-girl" />
-  </div>
-  <div class="card-header">
-    <span class="section-icon"><Icon size={24} stroke-width={1.7} aria-hidden="true" /></span>
+  <div class="card-top">
+    {avatar
+      ? <div class="card-avatar" aria-hidden="true"><Image src={avatar} alt="" width={72} height={72} /></div>
+      : <div class="card-avatar-placeholder" aria-hidden="true"></div>
+    }
     <span class="age-label">{section.minAge} a {section.maxAge} años</span>
   </div>
-  <h3 id={`${section.slug}-title`} class="mt-5 text-2xl font-extrabold tracking-[-0.045em] text-heading sm:text-[1.7rem]">{section.name}</h3>
+  <h3 id={`${section.slug}-title`} class="mt-4 text-2xl font-extrabold tracking-[-0.045em] text-heading sm:text-[1.7rem]">{section.name}</h3>
   <p class="mt-2 text-sm font-semibold text-primary-ink">{section.headline}</p>
   {!compact && <><p class="section-summary mt-5 text-sm leading-[1.85] text-body">{section.summary}</p>
   <ul class="mt-5 grid gap-2.5" aria-label={`Lo que se desarrolla en ${section.name}`}>
@@ -43,21 +32,18 @@ const chars = { manada: { girl: manadaGirl, boy: manadaBoy }, tropa: { girl: tro
 </article>
 
 <style>
-  .section-card { position: relative; display: flex; flex-direction: column; overflow: hidden; padding: 0 2.2rem 1.5rem; border: 2.5px solid var(--theme-primary-border); border-radius: 1.5rem; background: var(--theme-primary-soft); transition: transform .2s ease, box-shadow .2s ease; }
+  .section-card { position: relative; display: flex; flex-direction: column; padding: 1.5rem 2rem 1.5rem; border: 2.5px solid var(--theme-primary-border); border-radius: 1.5rem; background: var(--theme-primary-soft); transition: transform .2s ease, box-shadow .2s ease; }
   .section-card:hover { transform: translateY(-5px); box-shadow: 0 1rem 2.25rem color-mix(in srgb, var(--theme-primary) 16%, transparent); }
-  .char-shelf { position: relative; display: flex; align-items: flex-end; justify-content: space-between; height: 9rem; margin: 0 -2.2rem 1.5rem; padding: 0 1rem; background: color-mix(in oklab, var(--theme-primary) 12%, var(--theme-primary-soft)); border-bottom: 2px solid var(--theme-primary-border); overflow: hidden; }
-  .char-girl { display: block; height: 8.5rem; width: auto; object-fit: contain; flex-shrink: 0; transform: scaleX(-1); }
-  .char-boy { display: block; height: 8.2rem; width: auto; object-fit: contain; flex-shrink: 0; }
-  .card-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .section-icon { display: grid; width: 3rem; height: 3rem; flex-shrink: 0; place-items: center; border-radius: 50%; background: var(--theme-primary); color: var(--theme-on-primary); }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .card-avatar { width: 4rem; height: 4rem; border-radius: 50%; overflow: hidden; border: 2.5px solid var(--theme-primary-border); flex-shrink: 0; }
+  .card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-avatar-placeholder { width: 4rem; height: 4rem; border-radius: 50%; background: var(--theme-primary); flex-shrink: 0; }
   .age-label { padding: .4rem .8rem; border: 1.5px solid var(--theme-primary-border); border-radius: 999px; background: var(--surface-raised); color: var(--theme-primary-ink); font-size: .7rem; font-weight: 750; white-space: nowrap; }
   .section-summary { flex-grow: 1; }
-  .section-card-compact .char-shelf { height: 7rem; margin: 0 -1.5rem 1.2rem; }
-  .section-card-compact .char-girl { height: 6.5rem; }
-  .section-card-compact .char-boy { height: 6.5rem; }
-  .section-card-compact { padding: 0 1.5rem 1.1rem; }
+  .section-card-compact { padding: 1.2rem 1.5rem 1.1rem; }
+  .section-card-compact .card-avatar { width: 3rem; height: 3rem; }
   .section-card-compact h3 { font-size: 1.25rem; }
   .section-card-compact > p { flex-grow: 1; }
   @media (prefers-reduced-motion: reduce) { .section-card { transition: none; } .section-card:hover { transform: none; } }
-  @media (max-width: 640px) { .section-card { padding: 0 1.4rem 1.1rem; } .char-shelf { margin: 0 -1.4rem 1.3rem; } }
+  @media (max-width: 640px) { .section-card { padding: 1.2rem 1.4rem 1.1rem; } }
 </style>

@@ -46,7 +46,7 @@ import FleurDeLis from '../assets/flor-de-lis.svg';
             </button>
           </div>
         </div>
-        <a class="button button-primary w-full" href="/#unete">Únete al grupo <ArrowUpRight size={16} aria-hidden="true" /></a>
+        <a class="button button-primary w-full" href="/contacto">Únete al grupo <ArrowUpRight size={16} aria-hidden="true" /></a>
       </div>
     </div>
   </dialog>
@@ -83,18 +83,9 @@ import FleurDeLis from '../assets/flor-de-lis.svg';
       toggle.addEventListener('click', () => {
         if (dialog.open) { close(); return; }
         const root = document.documentElement;
-        const body = document.body;
-        const y = window.scrollY;
-        const previous = body.getAttribute('style');
         root.setAttribute('data-menu-open', '');
-        body.style.position = 'fixed';
-        body.style.top = `-${y}px`;
-        body.style.width = '100%';
         restoreScroll = () => {
-          if (previous === null) body.removeAttribute('style');
-          else body.setAttribute('style', previous);
           root.removeAttribute('data-menu-open');
-          window.scrollTo({ top: y, behavior: 'instant' });
         };
         // Reuse the actual trigger inside the modal so it remains keyboard-accessible.
         closeSlot.append(toggle);

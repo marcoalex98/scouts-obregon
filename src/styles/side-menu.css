@@ -10,7 +10,7 @@ html[data-menu-open] { overflow: hidden; }
 .side-menu { position: fixed; inset: 0; width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; overflow: hidden; background: transparent; color: var(--content-heading); }
 .side-menu::backdrop { background: #02061766; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .side-menu-panel { display: flex; flex-direction: column; width: min(26rem, calc(100% - 2rem)); height: 100%; margin-left: auto; border-left: 1px solid var(--border-default); background: var(--surface-raised); box-shadow: -16px 0 60px #02061726; }
-.side-menu[open] .side-menu-panel { animation: menu-enter .2s ease-out; }
+.side-menu[open] .side-menu-panel { animation: none; }
 .side-menu-heading { display: flex; min-height: 5.5rem; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-subtle); }
 .side-menu-content { display: flex; flex: 1; flex-direction: column; gap: 1.5rem; overflow-y: auto; overscroll-behavior: contain; padding: 1.25rem 1.5rem max(1.5rem, env(safe-area-inset-bottom)); }
 .side-menu-link { display: flex; min-height: 2.9rem; align-items: center; border-radius: .5rem; padding: .65rem .75rem; font-size: .94rem; font-weight: 700; color: var(--content-heading); }
@@ -23,8 +23,6 @@ html[data-menu-open] { overflow: hidden; }
 .appearance-switch[aria-checked='true'] { border-color: var(--theme-primary); background: var(--theme-primary); color: var(--theme-on-primary); }
 .switch-thumb { position: absolute; left: 3px; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--content-heading); transition: transform .2s; }
 .appearance-switch[aria-checked='true'] .switch-thumb { transform: translateX(1.6rem); background: var(--theme-on-primary); }
-@keyframes menu-enter { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
-  .side-menu[open] .side-menu-panel { animation: none; }
   .menu-toggle span, .switch-thumb { transition: none; }
 }

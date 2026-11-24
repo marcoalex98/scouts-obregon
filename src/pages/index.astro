@@ -5,19 +5,36 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MeetingLocation from '../components/MeetingLocation.astro';
-import SectionCard from '../components/SectionCard.astro';
 import { scoutSections, sectionHref } from '../data/sections';
 import { site, meetingSummary } from '../data/site';
+import { familyInfo, groupFeeSummary, scoutsMexicoRegistrationSummary } from '../data/families';
 import tropaGirl from '../assets/characters/tropa_girl.webp';
 import clanBoy from '../assets/characters/clan_boy.webp';
+import avatarManada from '../assets/characters/avatar/avatar-manada.webp';
+import avatarTropa from '../assets/characters/avatar/avatar-tropa.webp';
+import avatarComunidad from '../assets/characters/avatar/avatar-comunidad.webp';
+import avatarClan from '../assets/characters/avatar/avatar-clan.webp';
+const avatars = { manada: avatarManada, tropa: avatarTropa, comunidad: avatarComunidad, clan: avatarClan };
 
 const minAge = Math.min(...scoutSections.map((section) => section.minAge));
 const maxAge = Math.max(...scoutSections.map((section) => section.maxAge));
+const meetingGeo = site.meeting.latitude !== undefined && site.meeting.longitude !== undefined
+  ? { geo: { '@type': 'GeoCoordinates', latitude: site.meeting.latitude, longitude: site.meeting.longitude } }
+  : {};
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
     { '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, inLanguage: 'es-MX', publisher: { '@id': `${site.url}/#organization` } },
-    { '@type': 'Organization', '@id': `${site.url}/#organization`, name: site.name, url: site.url, location: { '@type': 'Place', name: site.meeting.place, description: site.meeting.reference, address: { '@type': 'PostalAddress', addressLocality: 'Ciudad Obregón', addressRegion: 'Sonora', addressCountry: 'MX' }, geo: { '@type': 'GeoCoordinates', latitude: site.meeting.latitude, longitude: site.meeting.longitude }, hasMap: site.meeting.mapsUrl } },
+    { '@type': 'Organization', '@id': `${site.url}/#organization`, name: site.name, url: site.url, location: { '@type': 'Place', name: site.meeting.place, description: site.meeting.reference, address: { '@type': 'PostalAddress', streetAddress: site.meeting.reference, addressLocality: 'Ciudad Obregón', addressRegion: 'Sonora', addressCountry: 'MX' }, ...meetingGeo, hasMap: site.meeting.mapsUrl } },
+    { '@type': 'FAQPage', '@id': `${site.url}/#faq`, mainEntity: [
+      { '@type': 'Question', name: '¿Qué sección corresponde a su edad?', acceptedAnswer: { '@type': 'Answer', text: `Las secciones acompañan distintas etapas de crecimiento. ${scoutSections.map((s) => `${s.name}: de ${s.minAge} a ${s.maxAge} años`).join('. ')}.` } },
+      { '@type': 'Question', name: '¿Cómo se planea el aprendizaje?', acceptedAnswer: { '@type': 'Answer', text: 'Cada actividad responde al esquema de progresión scout y busca desarrollar objetivos y competencias. La propuesta se relaciona con las 5 P del desarrollo sostenible y con los Objetivos de Desarrollo Sostenible de la ONU.' } },
+      { '@type': 'Question', name: '¿Cuáles son los costos para comenzar?', acceptedAnswer: { '@type': 'Answer', text: `${scoutsMexicoRegistrationSummary} ${groupFeeSummary} La camisa del uniforme cuesta aproximadamente $${familyInfo.registration.shirtApproximate} MXN. Los costos de campamentos, excursiones y actividades se informan por evento.` } },
+      { '@type': 'Question', name: '¿Qué uniforme necesitan?', acceptedAnswer: { '@type': 'Answer', text: 'Para comenzar pueden asistir con ropa cómoda. Después del registro se solicita al menos la camisa scout, pantalón, short o falda azul marino, calcetas azul marino y calzado cómodo y seguro.' } },
+      { '@type': 'Question', name: '¿Con qué frecuencia hay campamentos y salidas?', acceptedAnswer: { '@type': 'Answer', text: 'El grupo procura realizar al menos dos campamentos por semestre y una salida cada mes o bimestre, siempre que las condiciones, especialmente el calor, lo permitan. Las fechas y costos se comunican por actividad.' } },
+      { '@type': 'Question', name: '¿También pueden participar personas adultas?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, a través del voluntariado. Es una forma de colaborar con las experiencias formativas del grupo.' } },
+      { '@type': 'Question', name: '¿Dónde y cuándo se reúnen?', acceptedAnswer: { '@type': 'Answer', text: `${meetingSummary} En ocasiones especiales las actividades se realizan en la Casa Scout.` } },
+    ] },
   ],
 };
 ---
@@ -57,7 +74,7 @@ const structuredData = {
         <h1 id="hero-title">La aventura de<br /><span>crecer juntos.</span></h1>
         <p class="hero-description">Amigos, nuevos retos y un mundo por descubrir.<br class="hidden sm:block" /> Encuentra tu lugar en el Grupo Scout 5 Mak’Chu.</p>
         <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <a class="button hero-btn-primary" href="#unete">Quiero unirme <ArrowRight size={17} aria-hidden="true" /></a>
+          <a class="button hero-btn-primary" href="/contacto">Quiero unirme <ArrowRight size={17} aria-hidden="true" /></a>
           <a class="button hero-btn-secondary" href="#secciones">Explorar secciones <ArrowDown size={16} aria-hidden="true" /></a>
         </div>
         <!-- Badges de secciones -->
@@ -132,8 +149,20 @@ const structuredData = {
         </div>
         <p class="max-w-sm text-sm leading-[1.9] text-muted">Desde los primeros descubrimientos hasta los proyectos que dejan huella. Encuentra la sección que va contigo.</p>
       </div>
-      <div class="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {scoutSections.map((section) => <SectionCard section={section} compact />)}
+      <div class="mt-10 sections-strip">
+        {scoutSections.map((section) => (
+          <a href={sectionHref(section)} class="sec-card" data-theme={section.color}>
+            <div class="sec-card-avatar">
+              <Image src={avatars[section.slug]} alt="" width={96} height={96} />
+            </div>
+            <div class="sec-card-body">
+              <span class="sec-card-age">{section.minAge}–{section.maxAge} años</span>
+              <strong class="sec-card-name">{section.name}</strong>
+              <p class="sec-card-line">{section.headline}</p>
+            </div>
+            <span class="sec-card-arrow" aria-hidden="true"><ArrowRight size={18} /></span>
+          </a>
+        ))}
       </div>
       <a class="text-link mt-6" href="/secciones">Explorar todas las secciones <ArrowRight size={16} aria-hidden="true" /></a>
     </section>
@@ -157,38 +186,70 @@ const structuredData = {
     </section>
 
     <section id="familias" class="page-width section-spacing" aria-labelledby="families-title">
-      <div class="grid gap-10 lg:grid-cols-[.85fr_1.15fr] lg:gap-24">
+      <div class="families-heading">
         <div>
-          <p class="eyebrow">Para madres y padres</p>
-          <h2 id="families-title" class="section-title mt-4">Su aventura.<br /> Tu tranquilidad.</h2>
-          <p class="mt-5 max-w-sm text-sm leading-[1.9] text-muted">Entender qué es el escultismo es el primer paso. Aquí resolvemos algunas dudas para que conozcas mejor al grupo.</p>
-          <a class="text-link mt-4" href="#unete">Quiero más información <ArrowUpRight size={16} aria-hidden="true" /></a>
+          <p class="eyebrow">Para familias</p>
+          <h2 id="families-title" class="section-title mt-4">Todo lo necesario<br /> para comenzar.</h2>
         </div>
-        <div class="faq-list">
+        <div class="families-intro">
+          <p class="mt-5 max-w-sm text-sm leading-[1.9] text-muted">Conoce cómo se planean las actividades, qué incluye el registro y qué necesitan niñas, niños y jóvenes en sus primeras sesiones.</p>
+          <div class="families-actions">
+            <a class="text-link" href={familyInfo.scoutsMexicoUrl} target="_blank" rel="noopener noreferrer">Conocer Scouts de México <span class="sr-only">(abre otra pestaña)</span></a>
+            <a class="text-link" href="/contacto">Quiero más información <ArrowUpRight size={16} aria-hidden="true" /></a>
+          </div>
+        </div>
+      </div>
+      <div class="faq-list families-faq">
           <details open>
             <summary><span>¿Qué sección corresponde a su edad?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
             <div class="faq-answer">
               <p>Las secciones acompañan distintas etapas de crecimiento:</p>
-              <ul class="mt-3 grid gap-2">
+              <div class="mt-3 space-y-2">
                 {scoutSections.map((section) => (
-                  <li><a class="underline decoration-outline-strong underline-offset-4 hover:text-primary-ink" href={sectionHref(section)}>{section.name}: {section.minAge} a {section.maxAge} años.</a></li>
+                  <p><a class="underline decoration-outline-strong underline-offset-4 hover:text-primary-ink" href={sectionHref(section)}>{section.name}: {section.minAge} a {section.maxAge} años.</a></p>
                 ))}
-              </ul>
+              </div>
             </div>
           </details>
           <details>
-            <summary><span>¿Qué se aprende en los scouts?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
-            <div class="faq-answer"><p>El enfoque cambia con cada etapa: desde la imaginación y la convivencia en Manada hasta el servicio y el proyecto de vida en Clan. El trabajo en equipo, la autonomía y el liderazgo forman parte de ese camino.</p></div>
+            <summary><span>¿Cómo se planea el aprendizaje?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer space-y-3">
+              <p>Cada actividad responde al esquema de progresión scout y busca desarrollar objetivos y competencias. En Manada, por ejemplo, las sesiones se conocen como <em>cacerías</em>.</p>
+              <p>Una visita al Museo de Cócorit puede trabajar la relación con el entorno: reconocer el valor de la herencia cultural y respetar culturas diferentes de la propia.</p>
+              <p>Nuestras actividades se relacionan con las 5 P —Personas, Planeta, Prosperidad, Paz y Alianzas— y están apegadas a los <a class="underline underline-offset-4" href={familyInfo.sustainableDevelopmentGoalsUrl} target="_blank" rel="noopener noreferrer">Objetivos de Desarrollo Sostenible de la ONU<span class="sr-only"> (abre otra pestaña)</span></a>.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span>¿Cuáles son los costos para comenzar?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer space-y-3">
+              <p><strong>Registro anual a Scouts de México: ${familyInfo.registration.scoutsMexicoAnnual.toLocaleString('es-MX')} MXN por participante.</strong> Incluye seguro scout durante las actividades, credencial, parche anual, agenda y los materiales que determine la asociación.</p>
+              <p><strong>Cuota anual del grupo: ${familyInfo.registration.groupAnnualPerFamily.toLocaleString('es-MX')} MXN por familia.</strong> Apoya la entrega de pañoleta, insignias de progresión y otros reconocimientos scouts.</p>
+              <p><strong>Campamentos, excursiones y actividades:</strong> el costo se informa por evento. Las familias suelen organizar actividades para apoyarse con estos gastos.</p>
+              <p class="family-note mt-4">Montos comunicados en {familyInfo.updatedAt}. Confírmalos con el grupo antes de realizar cualquier pago.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span>¿Qué uniforme necesitan?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer space-y-3">
+              <p>Para comenzar solo necesitan ropa cómoda. Después del registro se solicita al menos la camisa scout, con un costo aproximado de ${familyInfo.registration.shirtApproximate.toLocaleString('es-MX')} MXN.</p>
+              <p>El pantalón, short o falda puede ser el que prefieran, en color azul marino y tela cómoda y resistente. También se piden calcetas azul marino y calzado seguro para realizar actividades.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span>¿Con qué frecuencia hay campamentos y salidas?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer"><p>El grupo procura realizar al menos dos campamentos por semestre y una excursión o salida cada mes o bimestre. Las fechas dependen de la organización de cada actividad y, especialmente, de las condiciones de calor.</p></div>
+          </details>
+          <details>
+            <summary><span>¿Dónde y cuándo se reúnen?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
+            <div class="faq-answer space-y-3">
+              <p>{meetingSummary} <a class="underline underline-offset-4" href="#ubicacion">Ver la ubicación habitual.</a></p>
+              <p>En ocasiones especiales nos reunimos en la <a class="underline underline-offset-4" href={familyInfo.specialVenue.mapsUrl} target="_blank" rel="noopener noreferrer">Casa Scout<span class="sr-only"> (abre Google Maps en otra pestaña)</span></a>. Cada cambio se comunica previamente a las familias.</p>
+            </div>
           </details>
           <details>
             <summary><span>¿También pueden participar personas adultas?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
             <div class="faq-answer"><p>Sí, a través del voluntariado. Es una forma de colaborar con las experiencias formativas del grupo. <a class="underline underline-offset-4" href="#voluntariado">Conoce el apartado de Adultos voluntarios.</a></p></div>
           </details>
-          <details>
-            <summary><span>¿Dónde se reúnen y cómo puedo inscribirme?</span><Plus size={17} class="faq-plus" aria-hidden="true" /></summary>
-            <div class="faq-answer"><p>{meetingSummary} <a class="underline underline-offset-4" href="#ubicacion">Ver ubicación en el mapa.</a> Las cuotas y el proceso de incorporación están pendientes de confirmación para este sitio.</p></div>
-          </details>
-        </div>
       </div>
     </section>
 
@@ -200,7 +261,7 @@ const structuredData = {
           <p class="mt-5 max-w-lg text-sm leading-[1.9] text-body">Comparte tu tiempo y tus habilidades para acompañar a las nuevas generaciones. El voluntariado sostiene las experiencias que hacen crecer al grupo.</p>
         </div>
         <div class="shrink-0">
-          <a class="button button-primary" href="#unete">Quiero ser voluntario <ArrowUpRight size={16} aria-hidden="true" /></a>
+          <a class="button button-primary" href="/voluntariado">Quiero ser voluntario <ArrowUpRight size={16} aria-hidden="true" /></a>
           <p class="mt-3 text-xs text-muted">Hay más de una forma de ser parte.</p>
         </div>
       </div>
@@ -212,14 +273,7 @@ const structuredData = {
         <p class="eyebrow justify-center">Únete a Mak’Chu</p>
         <h2 id="join-title" class="section-title mt-4">El siguiente paso<br /> empieza contigo.</h2>
         <p class="mx-auto mt-5 max-w-lg text-sm leading-[1.9] text-body">Ya sea para vivir tu primera aventura scout o para compartir tu experiencia como voluntario, nos gustaría conocerte.</p>
-        {site.contact ? (
-          <a class="button button-primary mt-7" href={site.contact.href}>{site.contact.label} <ArrowUpRight size={16} aria-hidden="true" /></a>
-        ) : (
-          <div class="contact-pending mx-auto mt-7 max-w-md">
-            <p class="text-xs font-bold text-primary-ink">Contacto por confirmar</p>
-            <p class="mt-2 text-xs leading-relaxed text-body">Aquí estará el canal institucional para solicitar información. Esta vista previa todavía no recibe solicitudes.</p>
-          </div>
-        )}
+        <a class="button button-primary mt-7" href="/contacto">Escribirnos <ArrowUpRight size={16} aria-hidden="true" /></a>
       </div>
     </section>
   </main>
@@ -277,19 +331,38 @@ const structuredData = {
   .section-spacing { padding-block: 5.5rem; }
   .section-title { font-size: clamp(1.9rem, 3.4vw, 2.8rem); line-height: 1.2; font-weight: 800; letter-spacing: -.05em; color: var(--content-heading); }
   .section-intro { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
+  /* Section cards — avatar redesign */
+  .sections-strip { display: grid; gap: .75rem; grid-template-columns: 1fr; }
+  .sec-card { display: flex; align-items: center; gap: .9rem; padding: .9rem 1rem; border: 2px solid var(--theme-primary-border); border-radius: 1.25rem; background: var(--theme-primary-soft); text-decoration: none; transition: transform .2s, box-shadow .2s; overflow: hidden; }
+  .sec-card:hover { transform: translateY(-3px); box-shadow: 0 .75rem 2rem color-mix(in srgb, var(--theme-primary) 18%, transparent); }
+  .sec-card-avatar { flex-shrink: 0; width: 3rem; height: 3rem; border-radius: 50%; overflow: hidden; border: 2.5px solid var(--theme-primary-border); background: var(--surface-raised); }
+  .sec-card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sec-card-body { flex: 1; min-width: 0; }
+  .sec-card-age { display: block; font-size: .65rem; font-weight: 800; color: var(--theme-primary-ink); opacity: .8; letter-spacing: .02em; }
+  .sec-card-name { display: block; font-size: .9rem; font-weight: 800; letter-spacing: -.03em; color: var(--theme-primary-ink); line-height: 1.2; margin-top: .1rem; }
+  .sec-card-line { font-size: .75rem; color: var(--content-body); line-height: 1.5; margin-top: .2rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .sec-card-arrow { flex-shrink: 0; color: var(--theme-primary); }
+  @media (min-width: 480px) { .sections-strip { grid-template-columns: repeat(2, 1fr); } .sec-card-avatar { width: 3.5rem; height: 3.5rem; } }
+  @media (min-width: 768px) { .sections-strip { grid-template-columns: repeat(4, 1fr); } .sec-card { flex-direction: column; align-items: flex-start; gap: .9rem; padding: 1.4rem; } .sec-card-avatar { width: 5rem; height: 5rem; } .sec-card-line { -webkit-line-clamp: 2; } .sec-card-arrow { align-self: flex-end; margin-top: auto; } .sec-card-body { width: 100%; } }
   .group-section { --content-heading: #fff; --content-body: #fff; --theme-primary-ink: #7DD3FC; border-block: 1px solid rgba(125,211,252,.2); background: linear-gradient(135deg, #071E3D 0%, #0C2D5A 52%, #0D3870 100%); color: #fff; }
   .group-years { display: inline-flex; align-items: center; gap: .6rem; font-size: .8rem; font-weight: 700; color: #7DD3FC; }
   .group-years span { font-size: 2rem; font-weight: 800; letter-spacing: -.04em; color: #F97316; line-height: 1; }
   .group-section .section-title, .group-section .text-body { color: #fff; }
+  .families-heading { display: grid; gap: 1.5rem; align-items: end; }
+  .families-intro > p { max-width: 42rem; margin-top: 0; }
+  .families-actions { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: 1rem; }
+  .families-faq { margin-top: 2.75rem; }
   .faq-list { display: grid; gap: .75rem; }
   .faq-list details { overflow: hidden; border: 1px solid var(--border-default); border-radius: 1rem; background: var(--surface-raised); transition: border-color .18s ease, box-shadow .18s ease; }
   .faq-list details[open] { border-color: var(--theme-primary-border); box-shadow: 0 .65rem 1.5rem color-mix(in srgb, var(--theme-primary) 8%, transparent); }
-  .faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; padding: 1.2rem 1.35rem; font-size: .85rem; font-weight: 800; cursor: pointer; list-style: none; }
+  .faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; padding: 1.2rem 1.35rem; font-size: .95rem; font-weight: 800; cursor: pointer; list-style: none; }
   .faq-list summary::-webkit-details-marker { display: none; }
   .faq-list summary:hover { color: var(--theme-primary); }
   .faq-plus { flex-shrink: 0; color: var(--content-muted); }
   details[open] .faq-plus { transform: rotate(45deg); }
-  .faq-answer { padding: 0 3.75rem 1.4rem 1.35rem; color: var(--content-body); font-size: .82rem; line-height: 1.9; }
+  .faq-answer { padding: 0 3.75rem 1.4rem 1.35rem; color: var(--content-body); font-size: .94rem; line-height: 1.85; }
+  .faq-answer strong { color: var(--content-heading); }
+  .family-note { color: var(--content-muted); font-size: .75rem; }
   .volunteer-panel { --content-heading: #fff; --content-body: #fff; --content-muted: #FFEDD5; --theme-primary-ink: #fff; display: flex; justify-content: space-between; align-items: center; gap: 3rem; padding: 3.2rem; border: 1px solid rgba(255,255,255,.25); border-radius: 1.5rem; background: linear-gradient(135deg, #C2410C 0%, #EA580C 52%, #F97316 100%); color: #fff; box-shadow: 0 1.25rem 3rem rgba(194,65,12,.22); }
   .volunteer-panel .section-title, .volunteer-panel .text-body { color: #fff; }
   .volunteer-panel .button-primary { background: #fff; color: #C2410C; box-shadow: 0 .65rem 1.5rem rgba(124,45,18,.22); }
@@ -299,6 +372,7 @@ const structuredData = {
   .join-section > .page-width { position: relative; z-index: 1; }
   .join-section .section-title, .join-section .text-body { color: #fff; }
   .contact-pending { padding: 1rem 1.5rem; border: 1px dashed var(--theme-primary-border); border-radius: .65rem; background: var(--surface-raised); }
+  @media (min-width: 768px) { .families-heading { grid-template-columns: .8fr 1.2fr; gap: 4rem; } }
   @media (max-width: 1023px) { .volunteer-panel { align-items: start; flex-direction: column; gap: 1.8rem; } }
   @media (max-width: 767px) { .section-intro { flex-direction: column; align-items: start; gap: 1.25rem; } }
   @media (max-width: 640px) { .section-spacing { padding-block: 3.5rem; } .volunteer-panel { padding: 1.8rem 1.5rem; } }

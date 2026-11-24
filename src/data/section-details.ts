@@ -1,15 +1,8 @@
-import type { ImageMetadata } from 'astro';
 import type { SectionSlug } from './sections';
 import { site } from './site';
 
 type Topic = { title: string; text: string };
 type Question = { question: string; answer: string };
-export type SectionPhoto = {
-  image: ImageMetadata;
-  alt: string;
-  caption?: string;
-  authorized: boolean;
-};
 export type SectionDetails = {
   intro: string[];
   focus: string;
@@ -21,7 +14,6 @@ export type SectionDetails = {
   guidanceIntro: string;
   guidance: Topic[];
   questions: Question[];
-  gallery: SectionPhoto[];
 };
 
 // Educational examples, not a confirmed programme or calendar for the local group.
@@ -74,7 +66,6 @@ export const sectionDetails = {
       { question: '¿Qué hay que comprar para empezar?', answer: 'No hay una lista de compras publicada. Antes de adquirir uniforme o materiales, confirma qué se necesita, cuándo se utiliza y cuáles son las cuotas vigentes, si aplican.' },
       { question: '¿Cómo se comparte información personal o de salud?', answer: 'No publiques datos sensibles en espacios abiertos. Antes de compartir información, pide al grupo que confirme el canal privado autorizado, quién la recibirá y para qué se necesita.' },
     ],
-    gallery: [],
   },
   tropa: {
     focus: 'Explorar en patrulla y aprender a resolver retos en equipo.',
@@ -122,7 +113,6 @@ export const sectionDetails = {
       { question: '¿Dónde se anuncian las salidas y campamentos?', answer: 'Este sitio no tiene salidas confirmadas. El grupo deberá informar por su canal autorizado las fechas, condiciones, acompañamiento, traslados y autorizaciones de cada propuesta.' },
       { question: '¿Qué sucede al pasar a la siguiente etapa?', answer: 'Comunidad de Caminantes es la siguiente sección del recorrido. El momento y la forma de transición deben conversarse con el grupo; aquí no se publica un procedimiento automático.' },
     ],
-    gallery: [],
   },
   comunidad: {
     focus: 'Tomar decisiones, explorar intereses y convertir ideas en proyectos.',
@@ -170,7 +160,6 @@ export const sectionDetails = {
       { question: '¿Cómo se combina con la escuela?', answer: `Las reuniones son los ${site.meeting.day.toLowerCase()}, de ${site.meeting.hours}. La disponibilidad de tiempo es una conversación importante antes de asumir compromisos; consulta con el grupo la participación esperada en otras actividades.` },
       { question: '¿Cuál es la siguiente sección?', answer: 'El Clan de Rovers continúa el recorrido con énfasis en servicio, compromiso y proyecto de vida. La transición se conversa con el grupo, sin asumir un procedimiento automático.' },
     ],
-    gallery: [],
   },
   clan: {
     focus: 'Servir a la comunidad mientras construyes tu propio proyecto de vida.',
@@ -218,6 +207,5 @@ export const sectionDetails = {
       { question: '¿Se puede combinar con estudios o trabajo?', answer: `Nos reunimos los ${site.meeting.day.toLowerCase()}, de ${site.meeting.hours}. Antes de asumir compromisos, conversa sobre tu disponibilidad y la participación esperada en proyectos y otras actividades.` },
       { question: '¿Ser Rover es lo mismo que ser adulto voluntario?', answer: 'No. Clan es una sección juvenil con su propio rango de edad y enfoque formativo. El voluntariado adulto es otra manera de colaborar y tiene un apartado independiente en el sitio.' },
     ],
-    gallery: [],
   },
 } satisfies Record<SectionSlug, SectionDetails>;

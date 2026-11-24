@@ -1,0 +1,39 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import { galleryPhotos } from '../data/gallery';
+import { scoutSections } from '../data/sections';
+import '../styles/sections.css';
+
+const sectionOrder = new Map(scoutSections.map((section, index) => [section.slug, index]));
+const firstSectionOrder = (sections: (typeof galleryPhotos)[number]['sections']) =>
+  Math.min(...sections.map((section) => sectionOrder.get(section) ?? Number.MAX_SAFE_INTEGER));
+const orderedPhotos = [...galleryPhotos].sort(
+  (photoA, photoB) => firstSectionOrder(photoA.sections) - firstSectionOrder(photoB.sections),
+);
+---
+
+<SiteLayout
+  title="Galería scout en Ciudad Obregón | Grupo 5 Mak’Chu"
+  description="Conoce en fotografías las experiencias de Manada, Tropa, Comunidad y Clan del Grupo Scout 5 Mak’Chu en Ciudad Obregón."
+>
+  <SiteHeader />
+  <main id="contenido" class="gallery-page">
+    <h1 class="sr-only">Galería del Grupo Scout 5 Mak’Chu</h1>
+    <div class="page-width">
+      <GalleryGrid
+        photos={orderedPhotos}
+        dialogId="gallery-all"
+        emptyTitle="La galería está lista para recibir sus primeras fotografías."
+        emptyText="Aún no hay imágenes autorizadas para publicar. Cuando el grupo las seleccione, aparecerán aquí y en las páginas de sus secciones correspondientes."
+      />
+    </div>
+  </main>
+  <SiteFooter />
+</SiteLayout>
+
+<style>
+  .gallery-page { padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 8rem); }
+</style>

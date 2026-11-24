@@ -3,7 +3,11 @@ import { ArrowUpRight, Clock3, MapPin } from '@lucide/astro';
 import { site } from '../data/site';
 import '../styles/meeting-location.css';
 const { meeting } = site;
-const mapUrl = `https://maps.google.com/maps?q=${meeting.latitude},${meeting.longitude}&z=17&output=embed&hl=es`;
+const mapQuery = `${meeting.place}, ${meeting.reference}, ${meeting.city}`;
+const mapLocation = meeting.latitude !== undefined && meeting.longitude !== undefined
+  ? `${meeting.latitude},${meeting.longitude}`
+  : mapQuery;
+const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapLocation)}&z=17&output=embed&hl=es`;
 ---
 <section id="ubicacion" class="meeting-location" aria-labelledby="meeting-title">
   <div class="page-width meeting-grid">

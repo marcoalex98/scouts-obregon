@@ -1,0 +1,192 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { Camera, ChevronLeft, ChevronRight, Images, X } from '@lucide/astro';
+import type { GalleryPhoto } from '../data/gallery';
+import '../styles/gallery.css';
+
+interface Props {
+  photos: GalleryPhoto[];
+  dialogId: string;
+  emptyTitle: string;
+  emptyText: string;
+}
+
+const { photos, dialogId, emptyTitle, emptyText } = Astro.props;
+const approvedPhotos = photos.filter((photo) => photo.authorized);
+
+const galleryItems = await Promise.all(approvedPhotos.map(async (photo) => {
+  const thumbnailMaxWidth = Math.min(photo.image.width, 1280);
+  const thumbnailWidths = [...new Set(
+    [360, 640, 960, thumbnailMaxWidth].filter((width) => width <= thumbnailMaxWidth),
+  )].sort((a, b) => a - b);
+  const large = await getImage({
+    src: photo.image,
+    width: Math.min(photo.image.width, 1920),
+    format: 'webp',
+    quality: 82,
+  });
+
+  return {
+    photo,
+    thumbnailWidths,
+    large,
+  };
+}));
+---
+
+{galleryItems.length ? (
+  <gallery-lightbox>
+    <div class="photo-gallery-grid">
+      {galleryItems.map(({ photo, thumbnailWidths, large }) => (
+        <figure class="photo-gallery-card">
+          <a
+            class="photo-gallery-trigger"
+            href={large.src}
+            data-gallery-open
+            data-large-src={large.src}
+            data-large-alt={photo.alt}
+            aria-label={`Ampliar fotografía: ${photo.caption}`}
+          >
+            <Image
+              src={photo.image}
+              alt={photo.alt}
+              widths={thumbnailWidths}
+              sizes="(max-width: 1200px) 33vw, 384px"
+              format="webp"
+              quality={78}
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+        </figure>
+      ))}
+    </div>
+
+    <dialog id={dialogId} class="photo-lightbox" aria-label="Vista ampliada de la fotografía">
+      <div class="photo-lightbox-panel">
+        <button type="button" class="photo-lightbox-close" data-gallery-close aria-label="Cerrar fotografía ampliada">
+          <X size={22} aria-hidden="true" />
+        </button>
+        {galleryItems.length > 1 && (
+          <>
+            <button type="button" class="photo-lightbox-nav photo-lightbox-prev" data-gallery-prev aria-label="Ver fotografía anterior">
+              <ChevronLeft size={28} aria-hidden="true" />
+            </button>
+            <button type="button" class="photo-lightbox-nav photo-lightbox-next" data-gallery-next aria-label="Ver fotografía siguiente">
+              <ChevronRight size={28} aria-hidden="true" />
+            </button>
+          </>
+        )}
+        <img data-gallery-image alt="" decoding="async" />
+      </div>
+    </dialog>
+  </gallery-lightbox>
+) : (
+  <div class="photo-gallery-empty">
+    <div class="photo-gallery-empty-lead">
+      <Images size={42} stroke-width={1.3} class="text-primary-ink" aria-hidden="true" />
+      <p class="mt-5 text-lg font-bold">{emptyTitle}</p>
+      <p class="section-copy mt-2 max-w-md">{emptyText}</p>
+    </div>
+    <div class="photo-gallery-empty-strip" aria-hidden="true">
+      {[0, 1, 2].map(() => <div><Camera size={25} stroke-width={1.2} /></div>)}
+    </div>
+  </div>
+)}
+
+<script>
+  class GalleryLightbox extends HTMLElement {
+    connectedCallback() {
+      const dialog = this.querySelector<HTMLDialogElement>('.photo-lightbox');
+      const panel = this.querySelector<HTMLElement>('.photo-lightbox-panel');
+      const image = this.querySelector<HTMLImageElement>('[data-gallery-image]');
+      const closeButton = this.querySelector<HTMLButtonElement>('[data-gallery-close]');
+      const previousButton = this.querySelector<HTMLButtonElement>('[data-gallery-prev]');
+      const nextButton = this.querySelector<HTMLButtonElement>('[data-gallery-next]');
+      if (!dialog || !panel || !image || !closeButton) return;
+
+      const links = [...this.querySelectorAll<HTMLAnchorElement>('[data-gallery-open]')];
+      let trigger: HTMLAnchorElement | null = null;
+      let startedOnBackdrop = false;
+      let loadToken = 0;
+      let currentIndex = 0;
+
+      const loadImage = (src: string, alt: string) => {
+        const token = ++loadToken;
+        image.removeAttribute('data-ready');
+        image.alt = '';
+
+        const reveal = async () => {
+          try { await image.decode(); } catch {}
+          if (token !== loadToken || image.naturalWidth === 0) return;
+          image.alt = alt;
+          image.setAttribute('data-ready', '');
+        };
+
+        image.onload = () => { void reveal(); };
+        image.onerror = () => {
+          if (token === loadToken) image.removeAttribute('data-ready');
+        };
+        image.src = src;
+        if (image.complete && image.naturalWidth > 0) void reveal();
+      };
+
+      const resetImage = () => {
+        loadToken += 1;
+        image.onload = null;
+        image.onerror = null;
+        image.removeAttribute('data-ready');
+        image.removeAttribute('src');
+        image.alt = '';
+      };
+
+      const showImage = (index: number) => {
+        currentIndex = (index + links.length) % links.length;
+        trigger = links[currentIndex];
+        loadImage(trigger.dataset.largeSrc ?? trigger.href, trigger.dataset.largeAlt ?? '');
+      };
+
+      links.forEach((link, index) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          showImage(index);
+          dialog.showModal();
+          document.documentElement.setAttribute('data-lightbox-open', '');
+          closeButton.focus({ preventScroll: true });
+        });
+      });
+
+      const close = () => dialog.close();
+      closeButton.addEventListener('click', close);
+      previousButton?.addEventListener('click', () => showImage(currentIndex - 1));
+      nextButton?.addEventListener('click', () => showImage(currentIndex + 1));
+      dialog.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          showImage(currentIndex - 1);
+        }
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          showImage(currentIndex + 1);
+        }
+      });
+      dialog.addEventListener('pointerdown', (event) => {
+        startedOnBackdrop = event.target === dialog || event.target === panel;
+      });
+      dialog.addEventListener('click', (event) => {
+        if ((event.target === dialog || event.target === panel) && startedOnBackdrop) close();
+      });
+      dialog.addEventListener('close', () => {
+        document.documentElement.removeAttribute('data-lightbox-open');
+        resetImage();
+        trigger?.focus({ preventScroll: true });
+      });
+      window.addEventListener('pagehide', () => {
+        document.documentElement.removeAttribute('data-lightbox-open');
+        if (dialog.open) dialog.close();
+      });
+    }
+  }
+
+  if (!customElements.get('gallery-lightbox')) customElements.define('gallery-lightbox', GalleryLightbox);
+</script>

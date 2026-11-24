@@ -23,7 +23,7 @@ import FleurDeLis from '../assets/flor-de-lis.svg';
       {navigation.map((item) => <a class="nav-link" href={item.href} data-active={isNavigationActive(item.href, Astro.url.pathname)} aria-current={Astro.url.pathname.replace(/\/$/, '') === item.href ? 'page' : undefined}>{item.label}</a>)}
     </nav>
     <div class="flex items-center gap-3">
-      <a class="button button-primary header-join" href="/#unete" aria-label="Únete al grupo"><span>Únete<span class="hidden min-[421px]:inline"> al grupo</span></span> <ArrowUpRight size={16} aria-hidden="true" /></a>
+      <a class="button button-primary header-join" href="/contacto" aria-label="Únete al grupo"><span>Únete<span class="hidden min-[421px]:inline"> al grupo</span></span> <ArrowUpRight size={16} aria-hidden="true" /></a>
       <SideMenu />
     </div>
   </div>
