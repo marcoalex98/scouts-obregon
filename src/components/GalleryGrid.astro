@@ -111,24 +111,36 @@ const galleryItems = await Promise.all(approvedPhotos.map(async (photo) => {
       let loadToken = 0;
       let currentIndex = 0;
 
-      const loadImage = (src: string, alt: string) => {
+      const loadImage = (src: string, alt: string, fallbackSrc = '') => {
         const token = ++loadToken;
+        const primaryUrl = new URL(src, document.baseURI).href;
+        const fallbackUrl = fallbackSrc ? new URL(fallbackSrc, document.baseURI).href : '';
+        let usingFallback = false;
         image.removeAttribute('data-ready');
         image.alt = '';
 
-        const reveal = async () => {
-          try { await image.decode(); } catch {}
+        const reveal = () => {
           if (token !== loadToken || image.naturalWidth === 0) return;
           image.alt = alt;
           image.setAttribute('data-ready', '');
         };
 
-        image.onload = () => { void reveal(); };
-        image.onerror = () => {
-          if (token === loadToken) image.removeAttribute('data-ready');
+        const setSource = (source: string) => {
+          image.src = source;
+          if (image.complete && image.naturalWidth > 0) reveal();
         };
-        image.src = src;
-        if (image.complete && image.naturalWidth > 0) void reveal();
+
+        image.onload = reveal;
+        image.onerror = () => {
+          if (token !== loadToken) return;
+          if (!usingFallback && fallbackUrl && fallbackUrl !== primaryUrl) {
+            usingFallback = true;
+            setSource(fallbackUrl);
+            return;
+          }
+          image.removeAttribute('data-ready');
+        };
+        setSource(primaryUrl);
       };
 
       const resetImage = () => {
@@ -143,7 +155,12 @@ const galleryItems = await Promise.all(approvedPhotos.map(async (photo) => {
       const showImage = (index: number) => {
         currentIndex = (index + links.length) % links.length;
         trigger = links[currentIndex];
-        loadImage(trigger.dataset.largeSrc ?? trigger.href, trigger.dataset.largeAlt ?? '');
+        const thumbnail = trigger.querySelector<HTMLImageElement>('img');
+        loadImage(
+          trigger.dataset.largeSrc ?? trigger.href,
+          trigger.dataset.largeAlt ?? '',
+          thumbnail?.currentSrc || thumbnail?.src || '',
+        );
       };
 
       links.forEach((link, index) => {
