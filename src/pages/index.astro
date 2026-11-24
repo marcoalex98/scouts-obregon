@@ -24,7 +24,7 @@ const meetingGeo = site.meeting.latitude !== undefined && site.meeting.longitude
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
-    { '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, inLanguage: 'es-MX', publisher: { '@id': `${site.url}/#organization` } },
+    { '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, alternateName: site.alternateName, inLanguage: 'es-MX', publisher: { '@id': `${site.url}/#organization` } },
     { '@type': 'Organization', '@id': `${site.url}/#organization`, name: site.name, url: site.url, location: { '@type': 'Place', name: site.meeting.place, description: site.meeting.reference, address: { '@type': 'PostalAddress', streetAddress: site.meeting.reference, addressLocality: 'Ciudad Obregón', addressRegion: 'Sonora', addressCountry: 'MX' }, ...meetingGeo, hasMap: site.meeting.mapsUrl } },
     { '@type': 'FAQPage', '@id': `${site.url}/#faq`, mainEntity: [
       { '@type': 'Question', name: '¿Qué sección corresponde a su edad?', acceptedAnswer: { '@type': 'Answer', text: `Las secciones acompañan distintas etapas de crecimiento. ${scoutSections.map((s) => `${s.name}: de ${s.minAge} a ${s.maxAge} años`).join('. ')}.` } },

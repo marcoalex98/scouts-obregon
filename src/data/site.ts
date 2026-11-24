@@ -1,5 +1,6 @@
 type SiteConfig = {
   name: string;
+  alternateName: string;
   shortName: string;
   url: string;
   logo: { src: string; width: number; height: number } | null;
@@ -20,6 +21,7 @@ type SiteConfig = {
 // Add only the official logo and an institutional contact approved for publication.
 export const site: SiteConfig = {
   name: 'Grupo Scout 5 Mak’Chu',
+  alternateName: 'Scouts Obregón',
   shortName: 'Mak’Chu',
   url: 'https://scoutsobregon.com',
   logo: null,
